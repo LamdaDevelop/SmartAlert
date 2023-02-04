@@ -21,7 +21,7 @@ public class LoadingActivity extends AppCompatActivity {
             public void run() {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if(currentUser==null){
-                    startActivity(new Intent(LoadingActivity.this,LoginActivity.class));
+                    startActivity(new Intent(LoadingActivity.this,ChooseRoleActivity.class));
                 }else{
                     startActivity(new Intent(LoadingActivity.this,MainActivity.class));
                 }
