@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "378800530536",
+    "project_id": "smartalert-82657",
+    "storage_bucket": "smartalert-82657.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378800530536:android:476493555b4d503ed4c7dd",
+        "android_client_info": {
+          "package_name": "com.galeos.smartalert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378800530536-40jhje65hjeiovj8pffvoc9hi13kcnud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYTfq8vSfPkUtiWydpCxgfD0fv1ENZmKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378800530536-40jhje65hjeiovj8pffvoc9hi13kcnud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
