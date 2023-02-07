@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -63,7 +64,12 @@ public class CreateAccountActivity extends AppCompatActivity {
                         changeInProgress(false);
                         if(task.isSuccessful()){
                             Toast.makeText(CreateAccountActivity.this,"Succesfully created account", Toast.LENGTH_SHORT).show();
-                            firebaseAuth.getCurrentUser().sendEmailVerification();
+                            try {
+                                firebaseAuth.getCurrentUser().sendEmailVerification();
+                            }catch (NullPointerException e){
+                                Toast.makeText(CreateAccountActivity.this,e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
                             firebaseAuth.signOut();
                             finish();
                         }else{
