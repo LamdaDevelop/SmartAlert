@@ -3,6 +3,7 @@ package com.galeos.smartalert;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -17,6 +18,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateAccountActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText, confirmPasswordEditText;
@@ -57,19 +64,22 @@ public class CreateAccountActivity extends AppCompatActivity {
         changeInProgress(true);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(CreateAccountActivity.this,
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         changeInProgress(false);
                         if(task.isSuccessful()){
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             Toast.makeText(CreateAccountActivity.this,"Succesfully created account", Toast.LENGTH_SHORT).show();
-                            try {
-                                firebaseAuth.getCurrentUser().sendEmailVerification();
-                            }catch (NullPointerException e){
-                                Toast.makeText(CreateAccountActivity.this,e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            }
-
+                            DocumentReference df =firestore.collection("users").document(user.getUid());
+                            Map<String,String> userInfo = new HashMap<>();
+                            Intent intent = getIntent();
+                            String isUser = intent.getStringExtra("isUser");
+                            userInfo.put("isUser",isUser);
+                            df.set(userInfo);
+                            firebaseAuth.getCurrentUser().sendEmailVerification();
                             firebaseAuth.signOut();
                             finish();
                         }else{

@@ -36,7 +36,9 @@ public class LoginActivity extends AppCompatActivity {
         createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
 
         loginBtn.setOnClickListener((v) -> loginUser());
-        createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class)));
+        Intent intent = getIntent();
+        String isUser = intent.getStringExtra("isUser");
+        createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class).putExtra("isUser",isUser)));
     }
 
     void loginUser() {
