@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,12 @@ public class CreateAccountActivity extends AppCompatActivity {
     Button createAccountBtn;
     ProgressBar progressBar;
     TextView loginBtnTextView;
+
+    FirebaseUser firebaseuser;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firestore;
+    DocumentReference df;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +70,28 @@ public class CreateAccountActivity extends AppCompatActivity {
     void createAccountInFirebase(String email, String password){
         changeInProgress(true);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(CreateAccountActivity.this,
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         changeInProgress(false);
                         if(task.isSuccessful()){
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            firebaseuser = firebaseAuth.getCurrentUser();
                             Toast.makeText(CreateAccountActivity.this,"Succesfully created account", Toast.LENGTH_SHORT).show();
-                            DocumentReference df =firestore.collection("users").document(user.getUid());
-                            Map<String,String> userInfo = new HashMap<>();
+
                             Intent intent = getIntent();
                             String isUser = intent.getStringExtra("isUser");
-                            userInfo.put("isUser",isUser);
+
+                            Log.d("User",firebaseuser.getUid());
+                            df =firestore.collection("users").document(firebaseuser.getUid());
+                            Map<String,Object> userInfo = new HashMap<>();
+                            Users users = new Users();
+                            users.setIsUser(isUser);
+                            userInfo.put("isUser",users);
                             df.set(userInfo);
+
                             firebaseAuth.getCurrentUser().sendEmailVerification();
                             firebaseAuth.signOut();
                             finish();
