@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">SmartAlert</string>
+<!--activity_choose_role-->
+    <string name="app_name" translatable="false">SmartAlert</string>
+    <string name="choose_your_role">Choose your role</string>
+    <string name="i_am">I am...</string>
+    <string name="a_user">A user</string>
+    <string name="an_employee">An employee</string>
+<!--activity_create_account-->
+    <string name="welcome_to_smartalert">Welcome to SmartAlert</string>
+    <string name="create_account_for_free">Create account for free</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="passwordhint">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_passwordhint">Confirm Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+<!--activity_login-->
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
 </resources>

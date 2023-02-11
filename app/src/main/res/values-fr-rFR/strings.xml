@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartAlert</string>
+    <string name="choose_your_role">Choisissez votre rôle</string>
+    <string name="i_am">Je suis...</string>
+    <string name="a_user">Un utilisateur</string>
+    <string name="an_employee">Un employé</string>
+    <string name="welcome_to_smartalert">Bienvenue à SmartAlert</string>
+    <string name="create_account_for_free">Créer un compte gratuitement</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="passwordhint">Mot de passe</string>
+    <string name="confirm_password">Confirmez le mot de passe</string>
+    <string name="confirm_passwordhint">Confirmez le mot de passe</string>
+    <string name="create_account">Créer un compte</string>
+    <string name="already_have_an_account">Vous avez déjà un compte?</string>
+    <string name="sign_in">S\'identifier</string>
+    <string name="don_t_have_an_account">Vous n\'avez pas de compte?</string>
+</resources>

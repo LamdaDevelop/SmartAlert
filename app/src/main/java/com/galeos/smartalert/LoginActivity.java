@@ -14,9 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +29,10 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     ProgressBar progressBar;
     TextView createAccountBtnTextView;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firestore;
+    FirebaseUser firebaseuser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void loginAccountInFirebase(String email, String password){
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         changeInProgress(true);
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -60,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
                 changeInProgress(false);
                 if(task.isSuccessful()){
                     if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        firebaseuser = firebaseAuth.getCurrentUser();
+                        checkUserAccessLevel(firebaseuser.getUid());
                     }else{
                         Toast.makeText(LoginActivity.this, "Email not verified, Please verify your email.", Toast.LENGTH_SHORT).show();
                     }
@@ -92,5 +101,22 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    void checkUserAccessLevel(String uid){
+        DocumentReference df = firestore.collection("users").document(uid);
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.getString("isUser").equals("1")){
+                    startActivity(new Intent(LoginActivity.this, UserMainActivity.class));
+                    finish();
+                }else if (documentSnapshot.getString("isUser").equals("0")){
+                    startActivity(new Intent(LoginActivity.this, EmployeeMainActivity.class));
+                    finish();
+                }
+            }
+        });
     }
 }
