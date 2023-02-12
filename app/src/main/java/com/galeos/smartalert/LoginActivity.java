@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         loginAccountInFirebase(email,password);
     }
-
     void loginAccountInFirebase(String email, String password){
         firebaseAuth = FirebaseAuth.getInstance();
         changeInProgress(true);
@@ -73,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                         firestore = FirebaseFirestore.getInstance();
                         checkUserAccessLevel(firebaseUser);
                     }else{
-                        Toast.makeText(LoginActivity.this, "@string/email_verify", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.email_verify), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -94,11 +93,11 @@ public class LoginActivity extends AppCompatActivity {
 
     boolean validateData(String email, String password) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailEditText.setError("@string/email_invalid");
+            emailEditText.setError(getString(R.string.email_invalid));
             return false;
         }
         if (password.length() < 6) {
-            passwordEditText.setError("@string/password_invalid");
+            passwordEditText.setError(getString(R.string.password_invalid));
             return false;
         }
         return true;
