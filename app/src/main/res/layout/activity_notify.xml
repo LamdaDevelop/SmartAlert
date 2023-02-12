@@ -10,19 +10,33 @@
 
     <!-- Drop-down button -->
 
+    <!-- Input field -->
+
+    <Button
+        android:id="@+id/imageBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="57dp"
+        android:text="Select Image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timeStampBtn"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/dropdown_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Select an option:"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:entries="@array/dropdown_options"
+        android:text="Select an option:"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Input field -->
     <Spinner
         android:id="@+id/dropdown_spinner"
         android:layout_width="0dp"
@@ -36,98 +50,139 @@
         app:layout_constraintTop_toBottomOf="@+id/dropdown_text_view" />
 
     <!-- Location and timestamp text views -->
+
     <TextView
         android:id="@+id/location_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:text="Location:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/dropdown_spinner"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@+id/dropdown_spinner"
+        tools:layout_editor_absoluteX="11dp" />
 
     <TextView
         android:id="@+id/location_info_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/dropdown_spinner"
-        app:layout_constraintStart_toEndOf="@+id/location_text_view" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/location_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/dropdown_spinner" />
 
     <TextView
         android:id="@+id/timestamp_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Timestamp:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/location_info_text_view"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@+id/location_text_view"
+        tools:layout_editor_absoluteX="11dp" />
 
     <TextView
         android:id="@+id/timestamp_info_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/location_info_text_view"
-        app:layout_constraintStart_toEndOf="@+id/timestamp_text_view" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/timestamp_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/location_info_text_view" />
 
 
     <!-- Photo upload field -->
+
+    <!-- Comments field -->
+
     <TextView
         android:id="@+id/photo_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
         android:text="Upload a photo:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/timestamp_text_view"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@+id/timestamp_text_view"
+        tools:layout_editor_absoluteX="8dp" />
 
     <ImageView
         android:id="@+id/photo_image_view"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_width="328dp"
+        android:layout_height="166dp"
+        android:layout_marginTop="26dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@+id/photo_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@+id/photo_text_view" />
 
-    <!-- Comments field -->
     <TextView
         android:id="@+id/comments_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Comments:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/photo_image_view"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photo_image_view" />
+
     <EditText
         android:id="@+id/comments_edit_text"
         android:layout_width="0dp"
         android:layout_height="180dp"
         android:inputType="textMultiLine"
-        android:minLines="1"
         android:maxLines="6"
+        android:minLines="1"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/comments_text_view"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comments_text_view" />
+
     <Button
         android:id="@+id/submit_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Submit"
-        app:layout_constraintTop_toBottomOf="@+id/comments_edit_text"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageBtn"
+        app:layout_constraintVertical_bias="0.887" />
+
+    <TextView
+        android:id="@+id/timeStampTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="7dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/timestamp_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/location_text_view" />
+
+    <Button
+        android:id="@+id/timeStampBtn"
+        android:layout_width="404dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="16dp"
+        android:onClick="GetTimestamp"
+        android:text="Get Timestamp"
+        app:layout_constraintTop_toBottomOf="@+id/comments_edit_text"
+        tools:layout_editor_absoluteX="-18dp" />
+
+    <TextView
+        android:id="@+id/locationTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="21dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/location_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/dropdown_spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
