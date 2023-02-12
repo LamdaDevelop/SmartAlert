@@ -68,11 +68,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 changeInProgress(false);
                 if(task.isSuccessful()){
-                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                        //firebaseuser = firebaseAuth.getCurrentUser();
-                        //checkUserAccessLevel(firebaseuser.getUid());
-                        startActivity(new Intent(LoginActivity.this, UserMainActivity.class));
-                        finish();
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if(firebaseUser.isEmailVerified()){
+                        firestore = FirebaseFirestore.getInstance();
+                        checkUserAccessLevel(firebaseUser);
                     }else{
                         Toast.makeText(LoginActivity.this, "Email not verified, Please verify your email.", Toast.LENGTH_SHORT).show();
                     }
@@ -105,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    void checkUserAccessLevel(String uid){
-        DocumentReference df = firestore.collection("users").document(uid);
+    void checkUserAccessLevel(FirebaseUser firebaseuser){
+        DocumentReference df = firestore.collection("users").document(firebaseuser.getUid());
 
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

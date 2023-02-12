@@ -85,12 +85,13 @@ public class CreateAccountActivity extends AppCompatActivity {
                             String isUser = intent.getStringExtra("isUser");
 
                             Log.d("User",firebaseuser.getUid());
-                            df =firestore.collection("users").document(firebaseuser.getUid());
-                            Map<String,Object> userInfo = new HashMap<>();
                             Users users = new Users();
                             users.setIsUser(isUser);
-                            userInfo.put("isUser",users);
-                            df.set(userInfo);
+                            firestore.collection("users").document(firebaseuser.getUid()).set(users);
+                            //Map<String,Object> userInfo = new HashMap<>();
+
+                            //userInfo.put("isUser",users);
+                            //df.set(userInfo);
 
                             firebaseAuth.getCurrentUser().sendEmailVerification();
                             firebaseAuth.signOut();
