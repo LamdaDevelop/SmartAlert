@@ -1,8 +1,5 @@
 package com.galeos.smartalert;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -13,10 +10,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +29,10 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     ProgressBar progressBar;
     TextView createAccountBtnTextView;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firestore;
+    FirebaseUser firebaseuser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
 
         loginBtn.setOnClickListener((v) -> loginUser());
-        createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class)));
+        Intent intent = getIntent();
+        String isUser = intent.getStringExtra("isUser");
+        createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class).putExtra("isUser",isUser)));
     }
 
     void loginUser() {
@@ -48,20 +59,20 @@ public class LoginActivity extends AppCompatActivity {
         }
         loginAccountInFirebase(email,password);
     }
-
     void loginAccountInFirebase(String email, String password){
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         changeInProgress(true);
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 changeInProgress(false);
                 if(task.isSuccessful()){
-                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if(firebaseUser.isEmailVerified()){
+                        firestore = FirebaseFirestore.getInstance();
+                        checkUserAccessLevel(firebaseUser);
                     }else{
-                        Toast.makeText(LoginActivity.this, "Email not verified, Please verify your email.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.email_verify), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -82,13 +93,30 @@ public class LoginActivity extends AppCompatActivity {
 
     boolean validateData(String email, String password) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailEditText.setError("Email is invalid");
+            emailEditText.setError(getString(R.string.email_invalid));
             return false;
         }
         if (password.length() < 6) {
-            passwordEditText.setError("Password length is invalid");
+            passwordEditText.setError(getString(R.string.password_invalid));
             return false;
         }
         return true;
+    }
+
+    void checkUserAccessLevel(FirebaseUser firebaseuser){
+        DocumentReference df = firestore.collection("users").document(firebaseuser.getUid());
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.getString("isUser").equals("1")){
+                    startActivity(new Intent(LoginActivity.this, UserMainActivity.class));
+                    finish();
+                }else if (documentSnapshot.getString("isUser").equals("0")){
+                    startActivity(new Intent(LoginActivity.this, EmployeeMainActivity.class));
+                    finish();
+                }
+            }
+        });
     }
 }

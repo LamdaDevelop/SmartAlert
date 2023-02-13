@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartAlert</string>
+    <string name="choose_your_role">Choisissez votre rôle</string>
+    <string name="i_am">Je suis...</string>
+    <string name="a_user">Un utilisateur</string>
+    <string name="an_employee">Un employé</string>
+    <string name="welcome_to_smartalert">Bienvenue à SmartAlert</string>
+    <string name="create_account_for_free">Créer un compte gratuitement</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="passwordhint">Mot de passe</string>
+    <string name="confirm_password">Confirmez le mot de passe</string>
+    <string name="confirm_passwordhint">Confirmez le mot de passe</string>
+    <string name="create_account">Créer un compte</string>
+    <string name="already_have_an_account">Vous avez déjà un compte?</string>
+    <string name="sign_in">S\'identifier</string>
+    <string name="don_t_have_an_account">Vous n\'avez pas de compte?</string>
+    <string name="select_an_option">Choisir une option:</string>
+    <string name="location">Emplacement:</string>
+    <string name="timestamp">horodatage:</string>
+    <string name="upload_a_photo">Télécharger une photo:</string>
+    <string name="comments">Commentaires:</string>
+    <string name="submit">Soumettre</string>
+    <string name="notify_about_an_event">Notifier un événement</string>
+    <string name="succ_creat_acc">Compte créé avec succès</string>
+    <string name="email_invalid">Le courriel est invalide</string>
+    <string name="password_invalid">La longueur du mot de passe n\'est pas valide</string>
+    <string name="password_not_match">Les mots de passe ne correspondent pas</string>
+    <string name="email_verify">E-mail non vérifié, veuillez vérifier votre e-mail.</string>
+</resources>

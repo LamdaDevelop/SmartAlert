@@ -17,8 +17,8 @@ public class ChooseRoleActivity extends AppCompatActivity {
         userBtn = findViewById(R.id.userBtn);
         employeeBtn = findViewById(R.id.employeeBtn);
 
-        userBtn.setOnClickListener((v) -> startActivity(new Intent(ChooseRoleActivity.this, LoginActivity.class).putExtra("role","user")));
+        userBtn.setOnClickListener((v) -> startActivity(new Intent(ChooseRoleActivity.this, LoginActivity.class).putExtra("isUser","1")));
 
-        employeeBtn.setOnClickListener((v) -> startActivity(new Intent(ChooseRoleActivity.this, LoginActivity.class).putExtra("role","employee")));
+        employeeBtn.setOnClickListener((v) -> startActivity(new Intent(ChooseRoleActivity.this, LoginActivity.class).putExtra("isUser","0")));
     }
 }

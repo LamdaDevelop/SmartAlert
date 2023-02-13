@@ -26,16 +26,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome to SmartAlert"
+        android:text="@string/welcome_to_smartalert"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/sign_in"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/sign_in"
         app:layout_constraintTop_toBottomOf="@+id/sign_in"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.036" />
 
     <LinearLayout
         android:id="@+id/sign_in_form"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create account for free"
+            android:text="@string/create_account_for_free"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Email"
+            android:text="@string/email"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner"
-            android:hint="Password"
+            android:hint="@string/passwordhint"
             android:inputType="textPassword"
             android:padding="8dp"
             android:textColor="@color/black"
@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Confirm Password"
+            android:text="@string/confirm_password"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -111,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner"
-            android:hint="Confirm Password"
+            android:hint="@string/confirm_passwordhint"
             android:inputType="textPassword"
             android:padding="8dp"
             android:textColor="@color/black"
@@ -132,7 +132,7 @@
             android:layout_height="64dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/rounded_red_button"
-            android:text="Create Account"
+            android:text="@string/create_account"
             android:textColor="@color/white"
             android:textSize="16dp" />
 
@@ -146,14 +146,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? "
+                android:text="@string/already_have_an_account"
                 android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/login_text_view_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Sign In"
+                android:text="@string/sign_in"
                 android:textColor="@color/secondary_text"
                 android:textStyle="bold" />
         </LinearLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartAlert</string>
+    <string name="choose_your_role">Επιλέξτε το ρόλο σας</string>
+    <string name="i_am">Είμαι...</string>
+    <string name="a_user">Ένας χρήστης</string>
+    <string name="an_employee">Ενας υπάλληλος</string>
+    <string name="welcome_to_smartalert">Καλωσήρθες στο SmartAlert</string>
+    <string name="create_account_for_free">Δημιούργησε λογαριασμό δωρεάν</string>
+    <string name="password">Κωδικός πρόσβασης</string>
+    <string name="passwordhint">Κωδικός πρόσβασης</string>
+    <string name="confirm_password">Επιβεβαίωση Κωδικού πρόσβασης</string>
+    <string name="confirm_passwordhint">Επιβεβαίωση Κωδικού πρόσβασης</string>
+    <string name="create_account">Δημιουργήστε λογαριασμό</string>
+    <string name="already_have_an_account">Έχετε ήδη λογαριασμό?</string>
+    <string name="sign_in">Συνδεθείτε</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="don_t_have_an_account">Δεν έχετε λογαριασμό;</string>
+    <string name="select_an_option">Επιλέξτε μια επιλογή:</string>
+    <string name="location">Τοποθεσία:</string>
+    <string name="upload_a_photo">Ανέβασε μια φωτογραφία:</string>
+    <string name="timestamp" translatable="false">Timestamp:</string>
+    <string name="comments">Σχόλια:</string>
+    <string name="submit">Υποβολή</string>
+    <string name="notify_about_an_event">Ειδοποίηση για ένα συμβάν</string>
+    <string name="succ_creat_acc">Ο λογαριασμός δημιουργήθηκε με επιτυχία</string>
+    <string name="email_invalid">Το email δεν είναι έγκυρο</string>
+    <string name="password_invalid">Το μήκος του κωδικού πρόσβασης δεν είναι έγκυρο</string>
+    <string name="password_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν</string>
+    <string name="email_verify">Το email δεν επαληθεύτηκε, Επαληθεύστε το email σας.</string>
+</resources>
