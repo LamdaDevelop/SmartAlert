@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 public class UserMainActivity extends AppCompatActivity {
 
     ImageButton sosBtn;
+    String[] options = {"Earthquake", "Flood", "Fire", "Hurricane", "Tsunami", "Terrorist Attack", "Chemical Spills"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

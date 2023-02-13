@@ -77,7 +77,10 @@
         app:layout_constraintStart_toEndOf="@+id/timestamp_text_view" />
 
 
+
+
     <!-- Photo upload field -->
+
     <TextView
         android:id="@+id/photo_text_view"
         android:layout_width="wrap_content"

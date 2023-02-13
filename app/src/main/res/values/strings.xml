@@ -36,9 +36,13 @@
 
     <!--dropdown options-->
     <string-array name="dropdown_options">
-        <item>Option 1</item>
-        <item>Option 2</item>
-        <item>Option 3</item>
-        <item>Option 4</item>
+        <item>Earthquake</item>
+        <item>Flood</item>
+        <item>Fire</item>
+        <item>Hurricane</item>
+        <item>Tsunami</item>
+        <item>Terrorist Attack</item>
+        <item>Chemical Spills</item>
+        <item>Other</item>
     </string-array>
 </resources>
