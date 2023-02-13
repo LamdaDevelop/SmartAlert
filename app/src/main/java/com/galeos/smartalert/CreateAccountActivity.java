@@ -32,10 +32,10 @@ public class CreateAccountActivity extends AppCompatActivity {
     ProgressBar progressBar;
     TextView loginBtnTextView;
 
-    FirebaseUser firebaseuser;
+    FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
-    DocumentReference df;
+
 
 
     @Override
@@ -78,15 +78,15 @@ public class CreateAccountActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         changeInProgress(false);
                         if(task.isSuccessful()){
-                            firebaseuser = firebaseAuth.getCurrentUser();
+                            firebaseUser = firebaseAuth.getCurrentUser();
                             Toast.makeText(CreateAccountActivity.this,getString(R.string.succ_creat_acc), Toast.LENGTH_SHORT).show();
                             Intent intent = getIntent();
                             String isUser = intent.getStringExtra("isUser");
 
-                            Log.d("User",firebaseuser.getUid());
+                            Log.d("User",firebaseUser.getUid());
                             Users users = new Users();
                             users.setIsUser(isUser);
-                            firestore.collection("users").document(firebaseuser.getUid()).set(users);
+                            firestore.collection("users").document(firebaseUser.getUid()).set(users);
                             //Map<String,Object> userInfo = new HashMap<>();
 
                             //userInfo.put("isUser",users);
