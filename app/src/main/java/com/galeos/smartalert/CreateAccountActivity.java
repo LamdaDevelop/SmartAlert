@@ -79,8 +79,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         changeInProgress(false);
                         if(task.isSuccessful()){
                             firebaseuser = firebaseAuth.getCurrentUser();
-                            Toast.makeText(CreateAccountActivity.this,"Succesfully created account", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(CreateAccountActivity.this,getString(R.string.succ_creat_acc), Toast.LENGTH_SHORT).show();
                             Intent intent = getIntent();
                             String isUser = intent.getStringExtra("isUser");
 
@@ -113,18 +112,17 @@ public class CreateAccountActivity extends AppCompatActivity {
             createAccountBtn.setVisibility(View.VISIBLE);
         }
     }
-
     boolean validateData(String email, String password, String confirmPassowrd){
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            emailEditText.setError("Email is invalid");
+            emailEditText.setError(getString(R.string.email_invalid));
             return false;
         }
         if(password.length()<6){
-            passwordEditText.setError("Password length is invalid");
+            passwordEditText.setError(getString(R.string.password_invalid));
             return false;
         }
         if(!password.equals(confirmPassowrd)){
-            confirmPasswordEditText.setError("Password not matched");
+            confirmPasswordEditText.setError(getString(R.string.password_not_match));
             return false;
         }
         return true;
