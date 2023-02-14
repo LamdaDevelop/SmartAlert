@@ -20,6 +20,7 @@
     <string name="email_invalid">Email is invalid</string>
     <string name="password_invalid">Password length is invalid</string>
     <string name="password_not_match">Passwords not matched</string>
+    <string name="Emailused">The email address is already in use by another account</string>
     <!--activity_login-->
     <string name="email_verify">Email not verified, Please verify your email.</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
@@ -37,6 +38,7 @@
     <string name="Couldnt_get_timestamp">Couldn\'t get timestamp</string>
     <string name="Please_add_some_comments">Please add some comments</string>
     <string name="Incident_sent_successfully">Incident sent successfully</string>
+
 
 
     <!--dropdown options-->
