@@ -100,6 +100,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         }
         incident = new Incidents(emergency,location,timestamp,comments);
         createIncidentInFirebase(incident);
+
     }
 
     boolean validateData(){
