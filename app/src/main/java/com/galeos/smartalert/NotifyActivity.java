@@ -112,6 +112,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         return true;
     }
 
+
     void createIncidentInFirebase(Incidents incident){
 
         firebaseAuth = FirebaseAuth.getInstance();
