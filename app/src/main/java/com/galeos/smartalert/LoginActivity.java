@@ -1,8 +1,5 @@
 package com.galeos.smartalert;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -12,6 +9,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         loginAccountInFirebase(email,password);
     }
-
     void loginAccountInFirebase(String email, String password){
         firebaseAuth = FirebaseAuth.getInstance();
         changeInProgress(true);
@@ -73,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                         firestore = FirebaseFirestore.getInstance();
                         checkUserAccessLevel(firebaseUser);
                     }else{
-                        Toast.makeText(LoginActivity.this, "Email not verified, Please verify your email.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.email_verify), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -94,11 +93,11 @@ public class LoginActivity extends AppCompatActivity {
 
     boolean validateData(String email, String password) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailEditText.setError("Email is invalid");
+            emailEditText.setError(getString(R.string.email_invalid));
             return false;
         }
         if (password.length() < 6) {
-            passwordEditText.setError("Password length is invalid");
+            passwordEditText.setError(getString(R.string.password_invalid));
             return false;
         }
         return true;

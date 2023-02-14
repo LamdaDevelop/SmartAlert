@@ -16,4 +16,32 @@
     <string name="already_have_an_account">Vous avez déjà un compte?</string>
     <string name="sign_in">S\'identifier</string>
     <string name="don_t_have_an_account">Vous n\'avez pas de compte?</string>
+    <string name="select_an_option">Choisir une option:</string>
+    <string name="location">Emplacement:</string>
+    <string name="timestamp">horodatage:</string>
+    <string name="upload_a_photo">Télécharger une photo:</string>
+    <string name="comments">Commentaires:</string>
+    <string name="submit">Soumettre</string>
+    <string name="notify_about_an_event">Notifier un événement</string>
+    <string name="succ_creat_acc">Compte créé avec succès</string>
+    <string name="email_invalid">Le courriel est invalide</string>
+    <string name="password_invalid">La longueur du mot de passe n\'est pas valide</string>
+    <string name="password_not_match">Les mots de passe ne correspondent pas</string>
+    <string name="email_verify">E-mail non vérifié, veuillez vérifier votre e-mail.</string>
+
+    <!--dropdown options-->
+    <string-array name="dropdown_options">
+        <item>Tremblement de terre</item>
+        <item>Inondation</item>
+        <item>Feu</item>
+        <item>Ouragan</item>
+        <item>Tsunami</item>
+        <item>Attaque terroriste</item>
+        <item>Déversements de produits chimiques</item>
+        <item>Autre</item>
+    </string-array>
+    <string name="Couldnt_track_location">Impossible de suivre votre position</string>
+    <string name="Couldnt_get_timestamp">Impossible d\'obtenir l\'horodatage</string>
+    <string name="Please_add_some_comments">Merci d\'ajouter quelques commentaires</string>
+    <string name="Incident_sent_successfully">Incident envoyé avec succès</string>
 </resources>
