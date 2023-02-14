@@ -104,15 +104,15 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     boolean validateData(){
         if(location_info_text_view==null){
-            location_info_text_view.setError("Couldn't track your location");
+            location_info_text_view.setError(getString(R.string.Couldnt_track_location));
             return false;
         }
         if(timestamp_info_text_view==null){
-            timestamp_info_text_view.setError("Couldn't get timestamp");
+            timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
         }
         if(comments_edit_text==null){
-            comments_edit_text.setError("Please add some comments");
+            comments_edit_text.setError(getString(R.string.Please_add_some_comments));
             return false;
         }
         return true;
@@ -131,7 +131,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         String document =incident.getEmergency() + firebaseUser.getUid();
         firestore.collection("incidents").document(document).set(incidentInfo);
-        Toast.makeText(NotifyActivity.this,"Incident sent successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
 
 

@@ -32,6 +32,11 @@
     <string name="submit">Submit</string>
     <!--activity_user_main-->
     <string name="notify_about_an_event">Νotify about an event</string>
+    <!--activity_notify-->
+    <string name="Couldnt_track_location">Couldn\'t track your location</string>
+    <string name="Couldnt_get_timestamp">Couldn\'t get timestamp</string>
+    <string name="Please_add_some_comments">Please add some comments</string>
+    <string name="Incident_sent_successfully">Incident sent successfully</string>
 
 
     <!--dropdown options-->
