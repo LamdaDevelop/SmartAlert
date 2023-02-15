@@ -119,7 +119,7 @@
         app:layout_constraintTop_toBottomOf="@+id/comments_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-/>
+        />
     <Button
         android:id="@+id/submit_button"
         android:layout_width="0dp"

@@ -25,6 +25,7 @@
         app:layout_constraintVertical_bias="0.342" />
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
@@ -52,5 +53,31 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/frameLayoutLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+
+        <ImageButton
+            android:id="@+id/logoutBtn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_dark_red_button" />
+
+        <TextView
+            android:id="@+id/logoutTxtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Logout"
+            android:textColor="@color/white" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

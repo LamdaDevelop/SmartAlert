@@ -44,4 +44,5 @@
     <string name="Couldnt_get_timestamp">Δεν ήταν δυνατή η λήψη χρονικής σήμανσης</string>
     <string name="Please_add_some_comments">Παρακαλώ προσθέστε μερικά σχόλια</string>
     <string name="Incident_sent_successfully">Το περιστατικό στάλθηκε με επιτυχία</string>
+    <string name="Emailused">Η διεύθυνση email χρησιμοποιείται ήδη από άλλον λογαριασμό</string>
 </resources>

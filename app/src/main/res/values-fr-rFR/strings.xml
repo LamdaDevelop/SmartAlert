@@ -44,4 +44,5 @@
     <string name="Couldnt_get_timestamp">Impossible d\'obtenir l\'horodatage</string>
     <string name="Please_add_some_comments">Merci d\'ajouter quelques commentaires</string>
     <string name="Incident_sent_successfully">Incident envoyé avec succès</string>
+    <string name="Emailused">L\'adresse e-mail est déjà utilisée par un autre compte</string>
 </resources>
