@@ -56,7 +56,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         //Current timestamp
         timestamp = new Timestamp(System.currentTimeMillis());
-        timestamp_info_text_view.setText(timestamp.toString());
+        //timestamp_info_text_view.setText(timestamp.toString());
 
         //Get current Location
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -127,7 +127,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             location_info_text_view.setError(getString(R.string.Couldnt_track_location));
             return false;
         }
-        if(timestamp_info_text_view.getText().toString()==""){
+        if(timestamp_info_text_view.getText().toString().equals("")){
             timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
     }
