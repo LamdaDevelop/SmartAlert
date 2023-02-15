@@ -28,4 +28,21 @@
     <string name="password_invalid">Το μήκος του κωδικού πρόσβασης δεν είναι έγκυρο</string>
     <string name="password_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν</string>
     <string name="email_verify">Το email δεν επαληθεύτηκε, Επαληθεύστε το email σας.</string>
+
+    <!--dropdown options-->
+    <string-array name="dropdown_options">
+        <item>Σεισμός</item>
+        <item>Πλημμύρα</item>
+        <item>Πυρκαγιά</item>
+        <item>Τυφώνας</item>
+        <item>Τσουνάμι</item>
+        <item>Τρομοκρατική ενέργεια</item>
+        <item>Χημικές Διαρροές</item>
+        <item>Άλλο</item>
+    </string-array>
+    <string name="Couldnt_track_location">Δεν ήταν δυνατός ο εντοπισμός της τοποθεσίας σας</string>
+    <string name="Couldnt_get_timestamp">Δεν ήταν δυνατή η λήψη χρονικής σήμανσης</string>
+    <string name="Please_add_some_comments">Παρακαλώ προσθέστε μερικά σχόλια</string>
+    <string name="Incident_sent_successfully">Το περιστατικό στάλθηκε με επιτυχία</string>
+    <string name="Emailused">Η διεύθυνση email χρησιμοποιείται ήδη από άλλον λογαριασμό</string>
 </resources>

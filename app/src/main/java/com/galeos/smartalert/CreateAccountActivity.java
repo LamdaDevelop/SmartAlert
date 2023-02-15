@@ -96,7 +96,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                             firebaseAuth.signOut();
                             finish();
                         }else{
-                            Toast.makeText(CreateAccountActivity.this,task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateAccountActivity.this, R.string.Emailused, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

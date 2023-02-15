@@ -3,27 +3,20 @@ package com.galeos.smartalert;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Patterns;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -89,7 +82,33 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     }
 
     void createIncident(){
-        String emergency = dropdown_spinner.getSelectedItem().toString();
+        String emergency="";
+        switch (dropdown_spinner.getSelectedItemPosition()){
+            case 0:
+                emergency = "Earthquake";
+                break;
+            case 1:
+                emergency = "Flood";
+                break;
+            case 2:
+                emergency = "Fire";
+                break;
+            case 3:
+                emergency = "Hurricane";
+                break;
+            case 4:
+                emergency = "Tsunami";
+                break;
+            case 5:
+                emergency = "Terrorist Attack";
+                break;
+            case 6:
+                emergency = "Chemical Spills";
+                break;
+            case 7:
+                emergency = "Other";
+                break;
+        }
         String location = location_info_text_view.getText().toString();
         String timestamp = timestamp_info_text_view.getText().toString();
         String comments = comments_edit_text.getText().toString();
@@ -100,23 +119,25 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         }
         incident = new Incidents(emergency,location,timestamp,comments);
         createIncidentInFirebase(incident);
+
     }
 
     boolean validateData(){
-        if(location_info_text_view==null){
-            location_info_text_view.setError("Couldn't track your location");
+        if(location_info_text_view.getText().toString().equals("")){
+            location_info_text_view.setError(getString(R.string.Couldnt_track_location));
             return false;
         }
-        if(timestamp_info_text_view==null){
-            timestamp_info_text_view.setError("Couldn't get timestamp");
+        if(timestamp_info_text_view.getText().toString().equals("")){
+            timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
-        }
-        if(comments_edit_text==null){
-            comments_edit_text.setError("Please add some comments");
-            return false;
-        }
+    }
+        if(comments_edit_text.getText().toString().equals("")){
+        comments_edit_text.setError(getString(R.string.Please_add_some_comments));
+        return false;
+    }
         return true;
     }
+
 
     void createIncidentInFirebase(Incidents incident){
 
@@ -131,7 +152,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         String document =incident.getEmergency() + firebaseUser.getUid();
         firestore.collection("incidents").document(document).set(incidentInfo);
-        Toast.makeText(NotifyActivity.this,"Incident sent successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
 
 
