@@ -18,6 +18,7 @@ public class UserMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_main);
 
         sosBtn = findViewById(R.id.sosBtn);
+        logoutBtn = findViewById(R.id.logoutBtn);
 
         sosBtn.setOnClickListener((v)->startActivity(new Intent(UserMainActivity.this,NotifyActivity.class)));
 

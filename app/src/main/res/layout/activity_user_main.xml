@@ -68,7 +68,7 @@
             android:id="@+id/logoutBtn"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:background="@drawable/round_dark_red_button" />
+            android:background="@drawable/rounded_dark_red_button" />
 
         <TextView
             android:id="@+id/logoutTxtView"

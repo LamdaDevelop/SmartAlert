@@ -56,7 +56,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         //Current timestamp
         timestamp = new Timestamp(System.currentTimeMillis());
-        //timestamp_info_text_view.setText(timestamp.toString());
+        timestamp_info_text_view.setText(timestamp.toString());
 
         //Get current Location
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
