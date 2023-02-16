@@ -68,6 +68,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         submit_button.setOnClickListener(v -> createIncident());
+
     }
 
     @Override
@@ -150,12 +151,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         incidentInfo.put("Timestamp",incident.getTimestamp());
         incidentInfo.put("Comments",incident.getComments());
 
-        String document =incident.getEmergency() + firebaseUser.getUid();
+        String document =incident.getEmergency() + " - "+firebaseUser.getUid() + timestamp_info_text_view.getText().toString();
         firestore.collection("incidents").document(document).set(incidentInfo);
         Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
-
-
     }
+
+
+
+
 
 }
