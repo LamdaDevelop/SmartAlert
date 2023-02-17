@@ -40,7 +40,6 @@
     <string name="Incident_sent_successfully">Incident sent successfully</string>
 
 
-
     <!--dropdown options-->
     <string-array name="dropdown_options">
         <item>Earthquake</item>
