@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class UserMainActivity extends AppCompatActivity {
 
     ImageButton sosBtn,logoutBtn;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,7 @@ public class UserMainActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity((new Intent(UserMainActivity.this,ChooseRoleActivity.class)));
+                startActivity(new Intent(UserMainActivity.this,ChooseRoleActivity.class));
                 finish();
             }
         });

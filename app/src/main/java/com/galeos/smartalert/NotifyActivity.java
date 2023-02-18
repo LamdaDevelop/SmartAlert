@@ -3,20 +3,27 @@ package com.galeos.smartalert;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -68,6 +75,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         submit_button.setOnClickListener(v -> createIncident());
+
     }
 
     @Override
@@ -119,7 +127,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         }
         incident = new Incidents(emergency,location,timestamp,comments);
         createIncidentInFirebase(incident);
-
     }
 
     boolean validateData(){
@@ -130,14 +137,13 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         if(timestamp_info_text_view.getText().toString().equals("")){
             timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
-    }
+        }
         if(comments_edit_text.getText().toString().equals("")){
         comments_edit_text.setError(getString(R.string.Please_add_some_comments));
         return false;
-    }
+        }
         return true;
     }
-
 
     void createIncidentInFirebase(Incidents incident){
 
@@ -150,12 +156,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         incidentInfo.put("Timestamp",incident.getTimestamp());
         incidentInfo.put("Comments",incident.getComments());
 
-        String document =incident.getEmergency() + firebaseUser.getUid();
+        String document =incident.getEmergency() + " - "+firebaseUser.getUid() + timestamp_info_text_view.getText().toString();
         firestore.collection("incidents").document(document).set(incidentInfo);
         Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
-
-
     }
+
+
+
+
 
 }

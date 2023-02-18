@@ -45,4 +45,6 @@
     <string name="Please_add_some_comments">Παρακαλώ προσθέστε μερικά σχόλια</string>
     <string name="Incident_sent_successfully">Το περιστατικό στάλθηκε με επιτυχία</string>
     <string name="Emailused">Η διεύθυνση email χρησιμοποιείται ήδη από άλλον λογαριασμό</string>
+    <string name="statistics">Στατιστικά</string>
+    <string name="logout">Αποσύνδεση</string>
 </resources>
