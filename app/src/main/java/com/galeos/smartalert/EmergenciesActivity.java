@@ -63,6 +63,7 @@ public class EmergenciesActivity extends AppCompatActivity {
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             // Access the data in the document
                             String emergency = document.getString("Emergency");
+
                             String timestampStr = document.getString("Timestamp");
                             String location = document.getString("Locations");
                             String comments = document.getString("Comments");
