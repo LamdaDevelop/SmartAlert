@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="@string/select_an_option"
+        android:text="Select an option:"
         android:entries="@array/dropdown_options"
         android:textColor="@color/black"
         android:textSize="16sp"
@@ -40,7 +40,7 @@
         android:id="@+id/location_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/location"
+        android:text="Location:"
         android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/dropdown_spinner"
@@ -60,7 +60,7 @@
         android:id="@+id/timestamp_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/timestamp"
+        android:text="Timestamp:"
         android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/location_info_text_view"
@@ -77,15 +77,12 @@
         app:layout_constraintStart_toEndOf="@+id/timestamp_text_view" />
 
 
-
-
     <!-- Photo upload field -->
-
     <TextView
         android:id="@+id/photo_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/upload_a_photo"
+        android:text="Upload a photo:"
         android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/timestamp_text_view"
@@ -106,7 +103,7 @@
         android:id="@+id/comments_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/comments"
+        android:text="Comments:"
         android:textSize="16sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/photo_image_view"
@@ -127,7 +124,7 @@
         android:id="@+id/submit_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/submit"
+        android:text="Submit"
         app:layout_constraintTop_toBottomOf="@+id/comments_edit_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

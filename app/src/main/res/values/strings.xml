@@ -38,6 +38,8 @@
     <string name="Couldnt_get_timestamp">Couldn\'t get timestamp</string>
     <string name="Please_add_some_comments">Please add some comments</string>
     <string name="Incident_sent_successfully">Incident sent successfully</string>
+    <string name="statistics">Statistics</string>
+    <string name="logout">Logout</string>
 
 
     <!--dropdown options-->

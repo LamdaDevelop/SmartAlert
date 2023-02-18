@@ -28,7 +28,7 @@
         android:layout_below="@id/incidents_listview"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:text="Logout"
+        android:text="@string/logout"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
