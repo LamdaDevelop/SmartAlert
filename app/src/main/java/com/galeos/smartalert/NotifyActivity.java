@@ -90,7 +90,33 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     }
 
     void createIncident(){
-        String emergency = dropdown_spinner.getSelectedItem().toString();
+        String emergency="";
+        switch (dropdown_spinner.getSelectedItemPosition()){
+            case 0:
+                emergency = "Earthquake";
+                break;
+            case 1:
+                emergency = "Flood";
+                break;
+            case 2:
+                emergency = "Fire";
+                break;
+            case 3:
+                emergency = "Hurricane";
+                break;
+            case 4:
+                emergency = "Tsunami";
+                break;
+            case 5:
+                emergency = "Terrorist Attack";
+                break;
+            case 6:
+                emergency = "Chemical Spills";
+                break;
+            case 7:
+                emergency = "Other";
+                break;
+        }
         String location = location_info_text_view.getText().toString();
         String timestamp = timestamp_info_text_view.getText().toString();
         String comments = comments_edit_text.getText().toString();
@@ -104,17 +130,17 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     }
 
     boolean validateData(){
-        if(location_info_text_view==null){
+        if(location_info_text_view.getText().toString().equals("")){
             location_info_text_view.setError(getString(R.string.Couldnt_track_location));
             return false;
         }
-        if(timestamp_info_text_view==null){
+        if(timestamp_info_text_view.getText().toString().equals("")){
             timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
         }
-        if(comments_edit_text==null){
-            comments_edit_text.setError(getString(R.string.Please_add_some_comments));
-            return false;
+        if(comments_edit_text.getText().toString().equals("")){
+        comments_edit_text.setError(getString(R.string.Please_add_some_comments));
+        return false;
         }
         return true;
     }
