@@ -29,6 +29,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +60,13 @@ public class EmployeeMainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
         incidents_listview.setAdapter(adapter);
         getLatestIncidentsFromFirebase();
-        logoutBtn.setOnClickListener((v)->startActivity(new Intent(EmployeeMainActivity.this,ChooseRoleActivity.class)));
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EmployeeMainActivity.this,ChooseRoleActivity.class));
+                finish();
+            }
+        });
 
         // Add OnItemClickListener to ListView
         incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -70,16 +78,19 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",emergency));
             }
         });
-        //rankBasedOnNumberOfIncidents();
+
     }
 
-    //Get the Incidents that occurred within the last hour
-    void getLatestIncidentsFromFirebase(){
+    void getLatestIncidentsFromFirebase() {
         firestore = FirebaseFirestore.getInstance();
 
-        //Collection Reference to all incidents
+        // Create a map to store the counts of incidents for each category
+        Map<String, Map<String, Integer>> categoryMap = new HashMap<>();
+
+        // Collection Reference to all incidents
         CollectionReference incidentsRef = firestore.collection("incidents");
-        //Query to get the incidents in order
+
+        // Query to get the incidents in order
         Query query = incidentsRef
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .orderBy("Emergency", Query.Direction.ASCENDING);
@@ -87,14 +98,12 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        // Use a HashSet to keep track of unique Emergency categories
-                        HashSet<String> uniqueEmergencies = new HashSet<>();
+                        // Iterate through the documents and group them by category and location
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             // Access the data in the document
                             String emergency = document.getString("Emergency");
-                            String timestampStr = document.getString("Timestamp");
                             String location = document.getString("Locations");
-                            String comments = document.getString("Comments");
+                            String timestampStr = document.getString("Timestamp");
 
                             // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -104,18 +113,49 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
+
                             // Calculate time difference between incident time and current time
                             Date currentTime = new Date();
                             long timeDiff = currentTime.getTime() - timestamp.getTime();
                             long hourInMillis = 60 * 60 * 1000;
-                            // Only add Emergency category if it hasn't been added before and occurred within the last hour
-                            if (timeDiff <= hourInMillis && !uniqueEmergencies.contains(emergency)) {
-                                uniqueEmergencies.add(emergency);
-                                //String incident = "Emergency: " + emergency +", Timestamp" + timestampStr + ", Location: " + location+", Comments: " + comments;
-                                String incident = "Emergency: " + emergency;
-                                arrayList.add(incident);
+
+                            // Only add Emergency category if it occurred within the last hour
+                            if (timeDiff <= hourInMillis ) {
+                                String category = emergency + " (" + location + ")";
+                                Map<String, Integer> locationMap = categoryMap.get(category);
+                                if (locationMap == null) {
+                                    locationMap = new HashMap<>();
+                                    categoryMap.put(category, locationMap);
+                                }
+                                Integer count = locationMap.get(location);
+                                if (count == null) {
+                                    count = 0;
+                                }
+                                locationMap.put(location, count + 1);
                             }
                         }
+                        // Create a list to store the categories with their counts
+                        List<String> categories = new ArrayList<>();
+                        for (String category : categoryMap.keySet()) {
+                            Map<String, Integer> locationMap = categoryMap.get(category);
+                            for (String location : locationMap.keySet()) {
+                                int count = locationMap.get(location);
+                                String subcategory = category + ":" + count;
+                                categories.add(subcategory);
+                            }
+                        }
+                        // Sort the categories by count in descending order
+                        Collections.sort(categories, new Comparator<String>() {
+                            @Override
+                            public int compare(String o1, String o2) {
+                                int count1 = Integer.parseInt(o1.substring(o1.lastIndexOf(":") + 1));
+                                int count2 = Integer.parseInt(o2.substring(o2.lastIndexOf(":") + 1));
+                                return Integer.compare(count2, count1);
+                            }
+                        });
+
+                        // Add the categories to the adapter and notify it of the data set changes
+                        arrayList.addAll(categories);
                         adapter.notifyDataSetChanged();
                     }
                 })
@@ -126,6 +166,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
 
 
@@ -177,24 +219,6 @@ public class EmployeeMainActivity extends AppCompatActivity {
         double lon2 = Double.parseDouble(parts2[1]);
         return haversine(lat1, lon1, lat2, lon2);
     }
-
-    void rankBasedOnNumberOfIncidents(){
-        HashMap<String, Integer> emergencyCounts = new HashMap<>();
-        for (String incident : arrayList) {
-            String emergency = incident.substring(11); // Assumes that "Emergency: " is always 11 characters
-            if (emergencyCounts.containsKey(emergency)) {
-                emergencyCounts.put(emergency, emergencyCounts.get(emergency) + 1);
-            } else {
-                emergencyCounts.put(emergency, 1);
-            }
-        }
-        for (Map.Entry<String, Integer> entry : emergencyCounts.entrySet()) {
-            String emergency = entry.getKey();
-            int count = entry.getValue();
-            Toast.makeText(EmployeeMainActivity.this, "Emergency " + emergency + " occurred " + count + " times.", Toast.LENGTH_LONG).show();
-        }
-    }
-
 
 
 /*
