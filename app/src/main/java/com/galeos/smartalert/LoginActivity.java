@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     FirebaseUser firebaseuser;
 
+    String isUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginBtn.setOnClickListener((v) -> loginUser());
         Intent intent = getIntent();
-        String isUser = intent.getStringExtra("isUser");
+        isUser = intent.getStringExtra("isUser");
         createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class).putExtra("isUser",isUser)));
     }
 
@@ -109,14 +110,18 @@ public class LoginActivity extends AppCompatActivity {
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.getString("isUser").equals("1")){
+                if (documentSnapshot.getString("isUser").equals("1") && isUser.equals("1")){
                     startActivity(new Intent(LoginActivity.this, UserMainActivity.class));
                     finish();
-                }else if (documentSnapshot.getString("isUser").equals("0")){
+                }else if (documentSnapshot.getString("isUser").equals("0") && isUser.equals("0")){
                     startActivity(new Intent(LoginActivity.this, EmployeeMainActivity.class));
                     finish();
                 }
+                else{
+                    Toast.makeText(LoginActivity.this,getString(R.string.Account_doesnt_exist), Toast.LENGTH_SHORT).show();
+                }
             }
+
         });
     }
 }
