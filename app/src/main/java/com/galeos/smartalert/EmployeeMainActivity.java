@@ -25,6 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.w3c.dom.Document;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class EmployeeMainActivity extends AppCompatActivity {
     ListView incidents_listview;
@@ -46,6 +48,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     Incidents incident;
+    private static final double r = 6372.8; // In kilometers
     private static final double RADIUS_IN_KM = 20.0;
 
     @Override
@@ -58,7 +61,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
         arrayList = new ArrayList<>();
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
         incidents_listview.setAdapter(adapter);
-        getLatestIncidentsFromFirebase();
+        //getLatestIncidentsFromFirebase();
+        getEmergencyDataFromFirebase();
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,10 +75,16 @@ public class EmployeeMainActivity extends AppCompatActivity {
         incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String emergency = arrayList.get(position).substring(arrayList.get(position).indexOf(":") + 2);
-                //Toast.makeText(EmployeeMainActivity.this, emergency, Toast.LENGTH_SHORT).show();
+                String[] fields = arrayList.get(position).split("/");
+                String emergency = fields[0].substring("Emergency: ".length());
+                String timestamp = fields[1].substring("Timestamp: ".length());
+                String location = fields[2].substring("Location: ".length());
+                //Toast.makeText(EmployeeMainActivity.this, emergency+timestamp+location, Toast.LENGTH_SHORT).show();
                 //getEmergencyDataFromFirebase(emergency);
-                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",emergency));
+                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class)
+                        .putExtra("Emergency",emergency)
+                        .putExtra("Timestamp",timestamp)
+                        .putExtra("Location",location));
             }
         });
 
@@ -178,6 +188,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
                                 int count1 = Integer.parseInt(o1.substring(o1.lastIndexOf(":") + 1));
                                 int count2 = Integer.parseInt(o2.substring(o2.lastIndexOf(":") + 1));
                                 return Integer.compare(count2, count1);
+
                             }
                         });
 
@@ -196,25 +207,156 @@ public class EmployeeMainActivity extends AppCompatActivity {
 
 
 
+    ArrayList<String> groupedEmergencies(){
+        ArrayList<String> grouped = new ArrayList<>();
+        ArrayList<String> all = new ArrayList<>();
 
-
-    void getEmergencyDataFromFirebase(String emergency) {
-        firestore = FirebaseFirestore.getInstance();
+        //Get a reference to the "incidents" collection in the Firestore database.
         CollectionReference incidentsRef = firestore.collection("incidents");
-        Query query = incidentsRef.whereEqualTo("Emergency", emergency);
+
+        //Create a query to get the incidents in descending order by timestamp and ascending order by emergency type
+        Query query = incidentsRef
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
+                .orderBy("Emergency", Query.Direction.ASCENDING);
+        //Execute the query and handle the result using a success listener
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        StringBuilder sb = new StringBuilder();
+                        // Iterate through the documents and group them by category and location
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            String comments = document.getString("Comments");
+                            // Access the data in the document
+                            String emergency = document.getString("Emergency");
                             String location = document.getString("Locations");
-                            String timestamp = document.getString("Timestamp");
-                            sb.append("Location: ").append(location).append(", Timestamp: ").append(timestamp).append(", Comments: ").append(comments).append("\n");
+                            String timestampStr = document.getString("Timestamp");
+                            int id = 1;
+                            String category = emergency + id;
+                            for (DocumentSnapshot document2 : queryDocumentSnapshots){
+                                String location2 = document.getString("Locations");
+                                if(distance(location, location2)<20.0){
+
+                                }
+                            }
+                            grouped.add(category);
                         }
-                        String toastMessage = "Emergency: " + emergency + "\n" + sb.toString();
-                        Toast.makeText(EmployeeMainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        return grouped;
+    }
+
+    void test(){
+        firestore = FirebaseFirestore.getInstance();
+        //Get a reference to the "incidents" collection in the Firestore database.
+        CollectionReference incidentsRef = firestore.collection("incidents");
+
+        //Create a query to get the incidents in descending order by timestamp and ascending order by emergency type
+        Query query = incidentsRef
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
+                .orderBy("Emergency", Query.Direction.ASCENDING);
+        //Execute the query and handle the result using a success listener
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        HashMap<String, DocumentSnapshot> matchingIncidents = new HashMap<>();
+                        for (DocumentSnapshot document1 : queryDocumentSnapshots) {
+                            String emergency1 = document1.getString("Emergency");
+                            String location1 = document1.getString("Locations");
+                            String timestamp1 = document1.getString("Timestamp");
+                            int counter=0;
+                            Log.d("TEST","OK4");
+                            // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                            Date timestamp = null;
+                            try {
+                                timestamp = format.parse(timestamp1);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            // Calculate time difference between incident time and current time
+                            Date currentTime = new Date();
+                            long timeDiff = currentTime.getTime() - timestamp.getTime();
+                            long hourInMillis = 60 * 60 * 1000;
+                            // Only add Emergency category if it hasn't been added before and occurred within the last hour
+                            if (timeDiff <= hourInMillis) {
+                                Log.d("TEST","OK3");
+                                for (DocumentSnapshot document2 : queryDocumentSnapshots) {
+                                    String emergency2 = document2.getString("Emergency");
+                                    String location2 = document2.getString("Locations");
+                                    String timestamp2 = document2.getString("Timestamp");
+                                    Log.d("TEST","OK2");
+                                    if(!timestamp1.equals(timestamp2) && emergency1.equals(emergency2)&& distance(location1,location2)<=20) {
+
+                                        Log.d("TEST","OK1");
+                                        // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
+                                        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                        Date timestampTemp = null;
+                                        try {
+                                            timestampTemp = format2.parse(timestamp2);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        // Calculate time difference between incident time and current time
+                                        Date currentTime2 = new Date();
+                                        long timeDiff2 = currentTime2.getTime() - timestampTemp.getTime();
+                                        long hourInMillis2 = 60 * 60 * 1000;
+                                            if (timeDiff2 <= hourInMillis2) {
+                                                Log.d("TEST","OK");
+                                                matchingIncidents.put(String.valueOf(counter), document2);
+                                                /*if(!arrayList.contains(timestamp2)){
+                                                    arrayList.add(timestamp2);
+                                                    adapter.notifyDataSetChanged();
+                                                }*/
+                                            }
+                                    }
+                                }
+                            }
+                            counter+=1;
+                        }
+                    }
+
+                });
+    }
+    void getEmergencyDataFromFirebase(){
+        firestore = FirebaseFirestore.getInstance();
+
+        //Collection Reference to all incidents
+        CollectionReference incidentsRef = firestore.collection("incidents");
+        //Query to get the incidents in order
+        Query query = incidentsRef
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
+                .orderBy("Emergency", Query.Direction.ASCENDING);
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            // Access the data in the document
+                            String emergency = document.getString("Emergency");
+                            String timestampStr = document.getString("Timestamp");
+                            String location = document.getString("Locations");
+                            String comments = document.getString("Comments");
+
+                            // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                            Date timestamp = null;
+                            try {
+                                timestamp = format.parse(timestampStr);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            // Calculate time difference between incident time and current time
+                            Date currentTime = new Date();
+                            long timeDiff = currentTime.getTime() - timestamp.getTime();
+                            long hourInMillis = 60 * 60 * 1000;
+                            // Only add Emergency category if it hasn't been added before and occurred within the last hour
+                            if (timeDiff <= hourInMillis) {
+                                String incident = "Emergency: " + emergency +"/\nTimestamp: " + timestampStr + "/\nLocation: " + location+"/\nComments: " + comments;
+                                arrayList.add(incident);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -225,7 +367,11 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 });
     }
 
-    /*public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+
+
+
+
+    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         lat1 = Math.toRadians(lat1);
@@ -235,9 +381,9 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         return r * c;
-    }*/
+    }
 
-    /*public static double distance(String loc1, String loc2) {
+    public static double distance(String loc1, String loc2) {
         String[] parts1 = loc1.split(",");
         String[] parts2 = loc2.split(",");
         double lat1 = Double.parseDouble(parts1[0]);
@@ -245,7 +391,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
         double lat2 = Double.parseDouble(parts2[0]);
         double lon2 = Double.parseDouble(parts2[1]);
         return haversine(lat1, lon1, lat2, lon2);
-    }*/
+    }
 
 
 /*
