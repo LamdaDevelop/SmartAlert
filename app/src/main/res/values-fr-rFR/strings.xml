@@ -45,6 +45,7 @@
     <string name="Please_add_some_comments">Merci d\'ajouter quelques commentaires</string>
     <string name="Incident_sent_successfully">Incident envoyé avec succès</string>
     <string name="Emailused">L\'adresse e-mail est déjà utilisée par un autre compte</string>
-    <string name="statistics">" Statistiques"</string>
-    <string name="logout">" Se déconnecter"</string>
+    <string name="statistics">Statistiques</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="Account_doesnt_exist">Le compte n\'existe pas</string>
 </resources>

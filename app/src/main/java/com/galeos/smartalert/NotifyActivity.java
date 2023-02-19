@@ -1,8 +1,10 @@
 package com.galeos.smartalert;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +39,7 @@ import java.util.Map;
 public class NotifyActivity extends AppCompatActivity implements LocationListener {
 
     LocationManager locationManager;
-    TextView timestamp_info_text_view,location_info_text_view;
+    TextView timestamp_info_text_view, location_info_text_view;
     Timestamp timestamp;
     EditText comments_edit_text;
     Spinner dropdown_spinner;
@@ -57,7 +60,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         comments_edit_text = findViewById(R.id.comments_edit_text);
         submit_button = findViewById(R.id.submit_button);
         //Spinner for categories drop down
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this, R.array.dropdown_options, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.dropdown_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         dropdown_spinner.setAdapter(adapter);
 
@@ -65,22 +68,23 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         timestamp = new Timestamp(System.currentTimeMillis());
         timestamp_info_text_view.setText(timestamp.toString());
 
-        //Get current Location
+        //location instantiate
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //Get current Location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},123);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-        submit_button.setOnClickListener(v -> createIncident());
-
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
+
+
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        location_info_text_view.setText(location.getLatitude()+","+location.getLongitude());
+        location_info_text_view.setText(location.getLatitude() + "," + location.getLongitude());
     }
 
 
@@ -89,9 +93,9 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    void createIncident(){
-        String emergency="";
-        switch (dropdown_spinner.getSelectedItemPosition()){
+    void createIncident() {
+        String emergency = "";
+        switch (dropdown_spinner.getSelectedItemPosition()) {
             case 0:
                 emergency = "Earthquake";
                 break;
@@ -122,48 +126,43 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         String comments = comments_edit_text.getText().toString();
 
         boolean isValidated = validateData();
-        if(!isValidated){
+        if (!isValidated) {
             return;
         }
-        incident = new Incidents(emergency,location,timestamp,comments);
+        incident = new Incidents(emergency, location, timestamp, comments);
         createIncidentInFirebase(incident);
     }
 
-    boolean validateData(){
-        if(location_info_text_view.getText().toString().equals("")){
+    boolean validateData() {
+        if (location_info_text_view.getText().toString().equals("")) {
             location_info_text_view.setError(getString(R.string.Couldnt_track_location));
             return false;
         }
-        if(timestamp_info_text_view.getText().toString().equals("")){
+        if (timestamp_info_text_view.getText().toString().equals("")) {
             timestamp_info_text_view.setError(getString(R.string.Couldnt_get_timestamp));
             return false;
         }
-        if(comments_edit_text.getText().toString().equals("")){
-        comments_edit_text.setError(getString(R.string.Please_add_some_comments));
-        return false;
+        if (comments_edit_text.getText().toString().equals("")) {
+            comments_edit_text.setError(getString(R.string.Please_add_some_comments));
+            return false;
         }
         return true;
     }
 
-    void createIncidentInFirebase(Incidents incident){
+    void createIncidentInFirebase(Incidents incident) {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        Map<String,Object> incidentInfo = new HashMap<>();
-        incidentInfo.put("Emergency",incident.getEmergency());
-        incidentInfo.put("Locations",incident.getLocation());
-        incidentInfo.put("Timestamp",incident.getTimestamp());
-        incidentInfo.put("Comments",incident.getComments());
+        Map<String, Object> incidentInfo = new HashMap<>();
+        incidentInfo.put("Emergency", incident.getEmergency());
+        incidentInfo.put("Locations", incident.getLocation());
+        incidentInfo.put("Timestamp", incident.getTimestamp());
+        incidentInfo.put("Comments", incident.getComments());
 
-        String document =incident.getEmergency() + " - "+firebaseUser.getUid() + timestamp_info_text_view.getText().toString();
+        String document = incident.getEmergency() + " - " + firebaseUser.getUid() + timestamp_info_text_view.getText().toString();
         firestore.collection("incidents").document(document).set(incidentInfo);
         Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
     }
-
-
-
-
-
 }
