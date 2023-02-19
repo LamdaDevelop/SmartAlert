@@ -46,8 +46,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     Incidents incident;
-    public static final double r = 6372.8;// In kilometers
-
+    private static final double RADIUS_IN_KM = 20.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,19 +80,26 @@ public class EmployeeMainActivity extends AppCompatActivity {
 
     }
 
+
+    /*  Retrieves the latest incidents data from a Firebase Firestore database
+        and groups them by category and location. It then calculates the number
+        of incidents that occurred within the last hour for each category and
+        location and displays them in a list.*/
     void getLatestIncidentsFromFirebase() {
-        firestore = FirebaseFirestore.getInstance();
+        firestore = FirebaseFirestore.getInstance(); //Get an instance of the Firestore database
 
         // Create a map to store the counts of incidents for each category
         Map<String, Map<String, Integer>> categoryMap = new HashMap<>();
 
-        // Collection Reference to all incidents
+        //Get a reference to the "incidents" collection in the Firestore database.
         CollectionReference incidentsRef = firestore.collection("incidents");
 
-        // Query to get the incidents in order
+        //Create a query to get the incidents in descending order by timestamp and ascending order by emergency type
         Query query = incidentsRef
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .orderBy("Emergency", Query.Direction.ASCENDING);
+
+        //Execute the query and handle the result using a success listener
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -119,28 +125,49 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             long timeDiff = currentTime.getTime() - timestamp.getTime();
                             long hourInMillis = 60 * 60 * 1000;
 
-                            // Only add Emergency category if it occurred within the last hour
+                            /* Only add Emergency category if it occurred within the last hour
+                                by calculating the time difference between the current time and the incident time,
+                                which is stored in the Timestamp field of the Firestore document.
+                                If the time difference is less than or equal to 1 hour (hourInMillis),
+                                the incident is considered to be recent and it will be added to the categoryMap*/
                             if (timeDiff <= hourInMillis ) {
+                                /*The category string is composed of the emergency and location fields of
+                                the Firestore document, and is used as the key in the categoryMap*/
                                 String category = emergency + " (" + location + ")";
+                                /*The locationMap is a HashMap that stores the counts
+                                of incidents for each location within a category.*/
                                 Map<String, Integer> locationMap = categoryMap.get(category);
+
+                                /*If the locationMap for the given category does not exist yet,
+                                a new HashMap is created and added to the categoryMap*/
                                 if (locationMap == null) {
                                     locationMap = new HashMap<>();
                                     categoryMap.put(category, locationMap);
                                 }
+                                /* If the location does not exist yet in the locationMap,
+                                 a count of 0 is assigned to count*/
                                 Integer count = locationMap.get(location);
                                 if (count == null) {
                                     count = 0;
                                 }
+                                /*Then the count for the given location is incremented by 1 in the locationMap*/
                                 locationMap.put(location, count + 1);
                             }
                         }
-                        // Create a list to store the categories with their counts
+                        /* creates a list of strings called "categories" that represents
+                        each emergency category with their respective counts.*/
                         List<String> categories = new ArrayList<>();
+                        /*It iterates over each key (i.e., category) in the "categoryMap"
+                        and retrieves the corresponding location map.*/
                         for (String category : categoryMap.keySet()) {
                             Map<String, Integer> locationMap = categoryMap.get(category);
+                            /* for each key (i.e., location) in the location map,
+                            it retrieves the count and concatenates it with the category
+                            name to form a subcategory string*/
                             for (String location : locationMap.keySet()) {
                                 int count = locationMap.get(location);
                                 String subcategory = category + ":" + count;
+                                //adds the subcategory string to the "categories" list
                                 categories.add(subcategory);
                             }
                         }
@@ -198,7 +225,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 });
     }
 
-    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+    /*public static double haversine(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         lat1 = Math.toRadians(lat1);
@@ -208,9 +235,9 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         return r * c;
-    }
+    }*/
 
-    public static double distance(String loc1, String loc2) {
+    /*public static double distance(String loc1, String loc2) {
         String[] parts1 = loc1.split(",");
         String[] parts2 = loc2.split(",");
         double lat1 = Double.parseDouble(parts1[0]);
@@ -218,7 +245,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
         double lat2 = Double.parseDouble(parts2[0]);
         double lon2 = Double.parseDouble(parts2[1]);
         return haversine(lat1, lon1, lat2, lon2);
-    }
+    }*/
 
 
 /*
