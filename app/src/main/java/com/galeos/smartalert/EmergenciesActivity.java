@@ -2,6 +2,7 @@ package com.galeos.smartalert;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -26,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 
 public class EmergenciesActivity extends AppCompatActivity {
     ListView incidents_listview;
@@ -44,11 +46,11 @@ public class EmergenciesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergencies);
 
-        incidents_listview = findViewById(R.id.incidents_listview);
+
         logoutBtn = findViewById(R.id.logoutBtn);
         arrayList = new ArrayList<>();
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
-        incidents_listview.setAdapter(adapter);
+        //incidents_listview.setAdapter(adapter);
         Intent intent = getIntent();
         curEmergency = intent.getStringExtra("Emergency");
         curTimestamp = intent.getStringExtra("Timestamp");
@@ -62,6 +64,9 @@ public class EmergenciesActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+
 
     }
 
@@ -145,4 +150,20 @@ public class EmergenciesActivity extends AppCompatActivity {
             return "Catastrophic Emergency";
         }
     }
+
+    void sendAlertMessage(){
+        // Obtain the FirebaseMessaging instance
+        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+
+        // Create a Notification message to send
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle("Title of the notification")
+                .setContentText("Message text of the notification")
+                .setSmallIcon(R.drawable.icons8_alert)
+                .build();
+
+        // Send the message using the FirebaseMessaging instance
+        //messaging.send(notification);
+    }
+
 }

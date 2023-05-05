@@ -90,10 +90,11 @@
 
     <ImageView
         android:id="@+id/photo_image_view"
+        android:src="@drawable/icons8_add_image_96"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="center"
         app:layout_constraintTop_toBottomOf="@+id/photo_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
