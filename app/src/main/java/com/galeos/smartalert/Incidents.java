@@ -5,7 +5,7 @@ public class Incidents {
     String location;
     String timestamp;
     String comments;
-    String image;
+
 
     public Incidents(String emergency, String location, String timestamp) {
         this.emergency = emergency;
@@ -20,21 +20,7 @@ public class Incidents {
         this.comments = comments;
     }
 
-    public Incidents(String emergency, String location, String timestamp, String comments,String image) {
-        this.emergency = emergency;
-        this.location = location;
-        this.timestamp = timestamp;
-        this.comments = comments;
-        this.image = image;
-    }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public String getEmergency() {
         return emergency;

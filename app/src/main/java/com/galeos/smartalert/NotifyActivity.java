@@ -136,7 +136,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             selectedImage = data.getData();
 
             photo_image_view.setImageURI(selectedImage);
-
+            image_picked = true;
         }
     }
 
@@ -171,16 +171,13 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         String location = location_info_text_view.getText().toString();
         String timestamp = timestamp_info_text_view.getText().toString();
         String comments = comments_edit_text.getText().toString();
-        String image = "imageRef";
+
         boolean isValidated = validateData();
         if (!isValidated) {
             return;
         }
-        if(image_picked){
-            incident = new Incidents(emergency, location, timestamp, comments, image);
-        }else{
-            incident = new Incidents(emergency, location, timestamp, comments);
-        }
+        incident = new Incidents(emergency, location, timestamp, comments);
+
         createIncidentInFirebase(incident);
     }
 
@@ -211,23 +208,20 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         incidentInfo.put("Timestamp", incident.getTimestamp());
         incidentInfo.put("Comments", incident.getComments());
 
+
         String document = incident.getEmergency() + " - " + firebaseUser.getUid() + timestamp_info_text_view.getText().toString();
         firestore.collection("incidents").document(document).set(incidentInfo);
         Toast.makeText(NotifyActivity.this, R.string.Incident_sent_successfully, Toast.LENGTH_SHORT).show();
         finish();
-        String imageFileName = incident.getTimestamp();
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
-        storageRef.putFile(selectedImage);
-        /*
-        String imageFileName = incident.getTimestamp();
-        storageRef = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
-        storageRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+        if(image_picked){
+            String imageFileName = incident.getTimestamp();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
+            storageRef.putFile(selectedImage);
+            image_picked = false;
+        }
 
 
-            }
-        })*/
     }
 
 
