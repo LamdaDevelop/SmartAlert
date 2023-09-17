@@ -19,7 +19,7 @@
     <string name="select_an_option">Επιλέξτε μια επιλογή:</string>
     <string name="location">Τοποθεσία:</string>
     <string name="upload_a_photo">Ανέβασε μια φωτογραφία:</string>
-    <string name="timestamp" translatable="false">Timestamp:</string>
+    <string name="timestamp" translatable="false">Χρονόσφραγίδα:</string>
     <string name="comments">Σχόλια:</string>
     <string name="submit">Υποβολή</string>
     <string name="notify_about_an_event">Ειδοποίηση για ένα συμβάν</string>
@@ -47,4 +47,5 @@
     <string name="Emailused">Η διεύθυνση email χρησιμοποιείται ήδη από άλλον λογαριασμό</string>
     <string name="statistics">Στατιστικά</string>
     <string name="logout">Αποσύνδεση</string>
+    <string name="Account_doesnt_exist">Ο λογαριασμός δεν υπάρχει</string>
 </resources>

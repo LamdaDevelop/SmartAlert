@@ -6,6 +6,7 @@ public class Incidents {
     String timestamp;
     String comments;
 
+
     public Incidents(String emergency, String location, String timestamp) {
         this.emergency = emergency;
         this.location = location;
@@ -18,6 +19,8 @@ public class Incidents {
         this.timestamp = timestamp;
         this.comments = comments;
     }
+
+
 
     public String getEmergency() {
         return emergency;

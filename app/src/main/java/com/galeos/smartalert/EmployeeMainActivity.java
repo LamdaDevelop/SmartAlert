@@ -85,7 +85,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
 
         // Create a map to store the counts of incidents for each category
-        Map<String, Map<String, Integer>> categoryMap = new HashMap<>();
+        ArrayList<Incidents> incidentArrayList = new ArrayList<>();
+
 
         // Collection Reference to all incidents
         CollectionReference incidentsRef = firestore.collection("incidents");
@@ -104,7 +105,6 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             String emergency = document.getString("Emergency");
                             String location = document.getString("Locations");
                             String timestampStr = document.getString("Timestamp");
-
                             // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                             Date timestamp = null;
@@ -121,30 +121,30 @@ public class EmployeeMainActivity extends AppCompatActivity {
 
                             // Only add Emergency category if it occurred within the last hour
                             if (timeDiff <= hourInMillis ) {
-                                String category = emergency + " (" + location + ")";
-                                Map<String, Integer> locationMap = categoryMap.get(category);
-                                if (locationMap == null) {
-                                    locationMap = new HashMap<>();
-                                    categoryMap.put(category, locationMap);
-                                }
-                                Integer count = locationMap.get(location);
-                                if (count == null) {
-                                    count = 0;
-                                }
-                                locationMap.put(location, count + 1);
+                                incidentArrayList.add(new Incidents(emergency,location,timestampStr));
                             }
                         }
-                        // Create a list to store the categories with their counts
-                        List<String> categories = new ArrayList<>();
-                        for (String category : categoryMap.keySet()) {
-                            Map<String, Integer> locationMap = categoryMap.get(category);
-                            for (String location : locationMap.keySet()) {
-                                int count = locationMap.get(location);
-                                String subcategory = category + ":" + count;
+                        // Create a map to group incidents by emergency type
+                        Map<String, Map<String, List<Incidents>>> groupedIncidents = groupIncidents(incidentArrayList);
+                        List<String> categories = new ArrayList();
+                        for (Map.Entry<String, Map<String, List<Incidents>>> emergencyEntry : groupedIncidents.entrySet()) {
+                            String emergencyType = emergencyEntry.getKey();
+                            Map<String, List<Incidents>> locationMap = emergencyEntry.getValue();
+
+                            for (Map.Entry<String, List<Incidents>> locationEntry : locationMap.entrySet()) {
+                                String location = locationEntry.getKey();
+                                List<Incidents> incidentsAtLocation = locationEntry.getValue();
+
+                                System.out.println("Location: " + location);
+                                int count = 0;
+                                for (Incidents incident : incidentsAtLocation) {
+                                    count+=1;
+                                }
+                                String subcategory = emergencyType + ","+location+ ":" + count;
                                 categories.add(subcategory);
                             }
                         }
-                        // Sort the categories by count in descending order
+
                         Collections.sort(categories, new Comparator<String>() {
                             @Override
                             public int compare(String o1, String o2) {
@@ -154,7 +154,6 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             }
                         });
 
-                        // Add the categories to the adapter and notify it of the data set changes
                         arrayList.addAll(categories);
                         adapter.notifyDataSetChanged();
                     }
@@ -167,85 +166,97 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 });
     }
 
+    public static Map<String, Map<String, List<Incidents>>> groupIncidents(List<Incidents> incidents) {
+        // Create a map to group incidents by emergency type and location
+        Map<String, Map<String, List<Incidents>>> groupedIncidents = new HashMap<>();
 
+        // Iterate through the incidents
+        for (Incidents incident : incidents) {
+            String emergencyType = incident.emergency;
+            String location = incident.location;
 
+            // Get or create a map for the current emergency type
+            Map<String, List<Incidents>> locationMap = groupedIncidents.getOrDefault(emergencyType, new HashMap<>());
 
+            // Iterate through existing locations to find a nearby one
+            boolean addedToExistingLocation = false;
+            for (Map.Entry<String, List<Incidents>> entry : locationMap.entrySet()) {
+                String existingLocation = entry.getKey();
+                double[] coordinates1 = splitCoordinates(location);
+                double[] coordinates2 = splitCoordinates(existingLocation);
 
-    void getEmergencyDataFromFirebase(String emergency) {
-        firestore = FirebaseFirestore.getInstance();
-        CollectionReference incidentsRef = firestore.collection("incidents");
-        Query query = incidentsRef.whereEqualTo("Emergency", emergency);
-        query.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        StringBuilder sb = new StringBuilder();
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            String comments = document.getString("Comments");
-                            String location = document.getString("Locations");
-                            String timestamp = document.getString("Timestamp");
-                            sb.append("Location: ").append(location).append(", Timestamp: ").append(timestamp).append(", Comments: ").append(comments).append("\n");
-                        }
-                        String toastMessage = "Emergency: " + emergency + "\n" + sb.toString();
-                        Toast.makeText(EmployeeMainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+                if (coordinates1 != null && coordinates2 != null) {
+                    double distance = calculateDistance(coordinates1[0], coordinates1[1], coordinates2[0], coordinates2[1]);
+
+                    if (distance <= 15.0) {
+                        // Add to the existing location group
+                        entry.getValue().add(incident);
+                        addedToExistingLocation = true;
+                        break;
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle any errors
-                    }
-                });
-    }
+                }
+            }
 
-    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        lat1 = Math.toRadians(lat1);
-        lat2 = Math.toRadians(lat2);
+            if (!addedToExistingLocation) {
+                // Create a new location group
+                List<Incidents> incidentsAtLocation = new ArrayList<>();
+                incidentsAtLocation.add(incident);
+                locationMap.put(location, incidentsAtLocation);
+            }
 
-        double a = Math.pow(Math.sin(dLat / 2), 2) +
-                Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        return r * c;
-    }
-
-    public static double distance(String loc1, String loc2) {
-        String[] parts1 = loc1.split(",");
-        String[] parts2 = loc2.split(",");
-        double lat1 = Double.parseDouble(parts1[0]);
-        double lon1 = Double.parseDouble(parts1[1]);
-        double lat2 = Double.parseDouble(parts2[0]);
-        double lon2 = Double.parseDouble(parts2[1]);
-        return haversine(lat1, lon1, lat2, lon2);
-    }
-
-
-/*
-    void rankIncidents(ArrayList<String> arrayList){
-        int numberOfIncidents = 0;
-        Location startPoint=new Location("locationA");
-        startPoint.setLatitude(17.372102);
-        startPoint.setLongitude(78.484196);
-
-        Location endPoint=new Location("locationA");
-        endPoint.setLatitude(17.375775);
-        endPoint.setLongitude(78.469218);
-
-        double distance=startPoint.distanceTo(endPoint);
-        if(distance<50000){
-            //OK
-            Toast.makeText(EmployeeMainActivity.this, String.valueOf(distance), Toast.LENGTH_SHORT).show();
-        }else{
-            //NOT OK
-            Toast.makeText(EmployeeMainActivity.this, "too far", Toast.LENGTH_SHORT).show();
+            // Put the location map back into the emergency type map
+            groupedIncidents.put(emergencyType, locationMap);
         }
 
+        return groupedIncidents;
+    }
 
 
-    }*/
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        // Radius of the Earth in kilometers
+        double radius = 6371;
+
+        // Convert latitude and longitude from degrees to radians
+        lat1 = Math.toRadians(lat1);
+        lon1 = Math.toRadians(lon1);
+        lat2 = Math.toRadians(lat2);
+        lon2 = Math.toRadians(lon2);
+
+        // Haversine formula
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        // Calculate the distance
+        double distance = radius * c;
+
+        return distance;
+    }
+
+
+    // Function to split a coordinates string into latitude and longitude as doubles
+    public static double[] splitCoordinates(String coordinates) {
+        String[] parts = coordinates.split(",");
+        if (parts.length == 2) {
+            try {
+                double lat = Double.parseDouble(parts[0]);
+                double lon = Double.parseDouble(parts[1]);
+                return new double[] { lat, lon };
+            } catch (NumberFormatException e) {
+                // Handle parsing errors
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+
 
 }
-
-
-
