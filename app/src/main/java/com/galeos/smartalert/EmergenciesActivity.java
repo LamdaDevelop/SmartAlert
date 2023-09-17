@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,7 @@ public class EmergenciesActivity extends AppCompatActivity {
     private static final double r = 6372.8; // In kilometers
     String curEmergency, curTimestamp, curLocation;
     String alertPoint;
+    TextView emergency_info_text_view, location_info_text_view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,13 @@ public class EmergenciesActivity extends AppCompatActivity {
         curEmergency = intent.getStringExtra("Emergency");
         curTimestamp = intent.getStringExtra("Timestamp");
         curLocation = intent.getStringExtra("Location");
+
+        emergency_info_text_view = findViewById(R.id.emergency_info_text_view);
+        location_info_text_view = findViewById(R.id.location_info_text_view);
+
+        emergency_info_text_view.setText(curEmergency);
+        location_info_text_view.setText(curLocation);
+
 
         getEmergencyDataFromFirebase();
         logoutBtn.setOnClickListener(new View.OnClickListener() {
