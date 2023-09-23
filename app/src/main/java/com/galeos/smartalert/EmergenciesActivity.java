@@ -1,9 +1,16 @@
 package com.galeos.smartalert;
-
+import android.Manifest;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
-import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,29 +18,27 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class EmergenciesActivity extends AppCompatActivity {
+import java.util.List;
+import java.util.Random;
+
+public class EmergenciesActivity extends AppCompatActivity implements LocationListener {
     ListView incidents_listview;
-    Button logoutBtn;
+    Button logoutBtn, messageBtn;
     ArrayList<String> arrayList;
     ArrayAdapter<String> adapter;
     FirebaseUser firebaseUser;
@@ -43,136 +48,120 @@ public class EmergenciesActivity extends AppCompatActivity {
     String curEmergency, curTimestamp, curLocation;
     String alertPoint;
     TextView emergency_info_text_view, location_info_text_view;
+
+    //Geo
+    private static final String TAG = "EmergenciesActivity";
+    private GeofencingClient geofencingClient;
+    private GeofenceHelper geofenceHelper;
+    private float GEOFENCE_RADIUS = 2000;
+    private String GEOFENCE_ID = ""+new Random().nextInt()+"";
+    LocationManager locationManager;
+    private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
+    private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergencies);
 
-
         logoutBtn = findViewById(R.id.logoutBtn);
-        arrayList = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
-        //incidents_listview.setAdapter(adapter);
-        Intent intent = getIntent();
-        curEmergency = intent.getStringExtra("Emergency");
-        curTimestamp = intent.getStringExtra("Timestamp");
-        curLocation = intent.getStringExtra("Location");
-
+        messageBtn = findViewById(R.id.messageBtn);
         emergency_info_text_view = findViewById(R.id.emergency_info_text_view);
         location_info_text_view = findViewById(R.id.location_info_text_view);
 
+        arrayList = new ArrayList<>();
+        //location instantiate
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //Geo
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        geofenceHelper = new GeofenceHelper(this);
+
+        Intent intent = getIntent();
+        curEmergency = intent.getStringExtra("Emergency");
+        String[] splitCurEmergency = curEmergency.split("\\,", 0);
+        curEmergency = splitCurEmergency[0];
+        double lat = Double.parseDouble(splitCurEmergency[1]);
+        double lon = Double.parseDouble(splitCurEmergency[2]);
+
         emergency_info_text_view.setText(curEmergency);
-        location_info_text_view.setText(curLocation);
+        location_info_text_view.setText(lat + "," + lon);
 
+        //Get current Location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+            finish();
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-        getEmergencyDataFromFirebase();
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            finish();
+            Toast.makeText(EmergenciesActivity.this, getString(R.string.Turnon_location_message), Toast.LENGTH_SHORT).show();
+        }
+
+        messageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: ADD LAT LON RADIUS FROM PREVIOUS ACTIVITY
+                    addGeofence(lat, lon, GEOFENCE_RADIUS);
+            }
+        });
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EmergenciesActivity.this,ChooseRoleActivity.class));
+                startActivity(new Intent(EmergenciesActivity.this, ChooseRoleActivity.class));
                 finish();
             }
         });
-
-
-
-
     }
 
-    void getEmergencyDataFromFirebase(){
-        firestore = FirebaseFirestore.getInstance();
-        //Collection Reference to all incidents
-        CollectionReference incidentsRef = firestore.collection("incidents");
-        Query query = incidentsRef.whereEqualTo("Emergency", curEmergency);
-        query.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        int counter = 0;
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            String emergency = document.getString("Emergency");
-                            String location = document.getString("Locations");
-                            String timestamp = document.getString("Timestamp");
-                            if(!timestamp.equals(curTimestamp) && emergency.equals(curEmergency)&& distance(location,curLocation)<=20){
-                                // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
-                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                                Date dateTimestamp = null;
-                                try {
-                                    dateTimestamp = format.parse(timestamp);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                // Calculate time difference between incident time and current time
-                                Date currentTime = new Date();
-                                long timeDiff = currentTime.getTime() - dateTimestamp.getTime();
-                                long hourInMillis = 60 * 60 * 1000;
-                                // Only add Emergency category if it hasn't been added before and occurred within the last hour
-                                if (timeDiff <= hourInMillis) {
-                                    counter+=1;
-                                    Log.d("TEST",timestamp);
-                                }
-                            }
-                        }
+    private void addGeofence(double lat, double lon, float radius) {
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, lat, lon, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL);
+        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
 
-                        alertPoint = alert(counter);
-                        Log.d("TEST",alertPoint+"-"+counter);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        geofencingClient.addGeofences(geofencingRequest, pendingIntent)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "onSuccess: Geofence Added...");
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle any errors
+                        String errorMessage = geofenceHelper.getErrorString(e);
+                        Log.d(TAG, "onFailure " + errorMessage);
                     }
                 });
     }
 
-    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        lat1 = Math.toRadians(lat1);
-        lat2 = Math.toRadians(lat2);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        double a = Math.pow(Math.sin(dLat / 2), 2) +
-                Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        return r * c;
-    }
-
-    public static double distance(String loc1, String loc2) {
-        String[] parts1 = loc1.split(",");
-        String[] parts2 = loc2.split(",");
-        double lat1 = Double.parseDouble(parts1[0]);
-        double lon1 = Double.parseDouble(parts1[1]);
-        double lat2 = Double.parseDouble(parts2[0]);
-        double lon2 = Double.parseDouble(parts2[1]);
-        return haversine(lat1, lon1, lat2, lon2);
-    }
-
-    String alert(int counter){
-        if(counter==1){
-            return "Minor Emergency";
-        }else if(counter>=2 && counter <=3){
-            return "Major Emergency";
-        }else if(counter>=4 && counter <=10){
-            return "Critical Emergency";
-        }else{
-            return "Catastrophic Emergency";
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //We have the permission
+                Toast.makeText(this, "You can add geofences...", Toast.LENGTH_SHORT).show();
+            } else {
+                //We do not have the permission..
+                Toast.makeText(this, "Background location access is neccessary for geofences to trigger...", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    void sendAlertMessage(){
-        // Obtain the FirebaseMessaging instance
-        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
 
-        // Create a Notification message to send
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle("Title of the notification")
-                .setContentText("Message text of the notification")
-                .setSmallIcon(R.drawable.icons8_alert)
-                .build();
+    }
 
-        // Send the message using the FirebaseMessaging instance
-        //messaging.send(notification);
+    @Override
+    public void onLocationChanged(@NonNull List<Location> locations) {
+        LocationListener.super.onLocationChanged(locations);
     }
 
 }

@@ -90,9 +90,15 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+            finish();
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            finish();
+            Toast.makeText(NotifyActivity.this, getString(R.string.Turnon_location_message), Toast.LENGTH_SHORT).show();
+        }
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override

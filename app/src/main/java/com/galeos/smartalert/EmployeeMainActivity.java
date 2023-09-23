@@ -72,10 +72,12 @@ public class EmployeeMainActivity extends AppCompatActivity {
         incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String emergency = arrayList.get(position).substring(arrayList.get(position).indexOf(":") + 2);
+
+                String emergency = arrayList.get(position);
+                String[] splitEmergency = emergency.split("\\:",0);
                 //Toast.makeText(EmployeeMainActivity.this, emergency, Toast.LENGTH_SHORT).show();
                 //getEmergencyDataFromFirebase(emergency);
-                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",emergency));
+                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",splitEmergency[0]));
             }
         });
 
