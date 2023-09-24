@@ -22,15 +22,16 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
-        if(geofencingEvent.hasError()){
+        if (geofencingEvent.hasError()) {
             Log.d(TAG, "onReceive: Error receiving geofence event...");
             return;
         }
 
         List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
-        for(Geofence geofence: geofenceList){
+        for (Geofence geofence: geofenceList) {
             Log.d(TAG, "onReceive: " + geofence.getRequestId());
         }
+//        Location location = geofencingEvent.getTriggeringLocation();
         int transitionType = geofencingEvent.getGeofenceTransition();
         switch (transitionType){
             case Geofence.GEOFENCE_TRANSITION_ENTER:

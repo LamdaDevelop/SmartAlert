@@ -117,7 +117,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     }
 
     private void addGeofence(double lat, double lon, float radius) {
-        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, lat, lon, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL);
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, lat, lon, radius, Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_ENTER);
         GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
         PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
 
