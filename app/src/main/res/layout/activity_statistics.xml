@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Counter for Earthquake -->
+    <TextView
+        android:id="@+id/earthquake"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Earthquake: 0"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Flood -->
+    <TextView
+        android:id="@+id/flood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Flood: 0"
+        android:layout_below="@id/earthquake"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Fire -->
+    <TextView
+        android:id="@+id/fire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fire: 0"
+        android:layout_below="@id/flood"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Hurricane -->
+    <TextView
+        android:id="@+id/hurricane"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hurricane: 0"
+        android:layout_below="@id/fire"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Tsunami -->
+    <TextView
+        android:id="@+id/tsunami"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tsunami: 0"
+        android:layout_below="@id/hurricane"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Terrorist Attack -->
+    <TextView
+        android:id="@+id/terroristAttack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terrorist Attack: 0"
+        android:layout_below="@id/tsunami"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Chemical Spills -->
+    <TextView
+        android:id="@+id/chemicalSpills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chemical Spills: 0"
+        android:layout_below="@id/terroristAttack"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Other -->
+    <TextView
+        android:id="@+id/other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Other: 0"
+        android:layout_below="@id/chemicalSpills"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Counter for Total Incidents -->
+    <TextView
+        android:id="@+id/totalIncidents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Incidents: 0"
+        android:layout_below="@id/other"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- GO BACK Button -->
+    <Button
+        android:id="@+id/goBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GO BACK"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+</RelativeLayout>

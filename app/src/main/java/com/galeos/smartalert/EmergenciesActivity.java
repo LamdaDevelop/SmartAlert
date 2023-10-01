@@ -1,5 +1,8 @@
 package com.galeos.smartalert;
+import static java.lang.String.format;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,21 +23,34 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EmergenciesActivity extends AppCompatActivity implements LocationListener {
     ListView incidents_listview;
@@ -46,9 +62,8 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     FirebaseFirestore firestore;
     private static final double r = 6372.8; // In kilometers
     String curEmergency, curTimestamp, curLocation;
-    String alertPoint;
     TextView emergency_info_text_view, location_info_text_view;
-
+    private String url = "https://fcm.googleapis.com/fcm/send";
     //Geo
     private static final String TAG = "EmergenciesActivity";
     private GeofencingClient geofencingClient;
@@ -58,6 +73,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     LocationManager locationManager;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private String token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +119,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
         messageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: ADD LAT LON RADIUS FROM PREVIOUS ACTIVITY
-                    addGeofence(lat, lon, GEOFENCE_RADIUS);
+                addGeofence(lat, lon, GEOFENCE_RADIUS);
             }
         });
         logoutBtn.setOnClickListener(new View.OnClickListener() {
@@ -163,5 +178,9 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     public void onLocationChanged(@NonNull List<Location> locations) {
         LocationListener.super.onLocationChanged(locations);
     }
+
+
+
+
 
 }

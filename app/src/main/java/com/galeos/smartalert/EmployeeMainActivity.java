@@ -86,7 +86,6 @@ public class EmployeeMainActivity extends AppCompatActivity {
     void getLatestIncidentsFromFirebase() {
         firestore = FirebaseFirestore.getInstance();
 
-        // Create a map to store the counts of incidents for each category
         ArrayList<Incidents> incidentArrayList = new ArrayList<>();
 
 
