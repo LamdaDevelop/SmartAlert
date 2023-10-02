@@ -38,7 +38,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -54,7 +58,7 @@ import org.json.JSONObject;
 
 public class EmergenciesActivity extends AppCompatActivity implements LocationListener {
     ListView incidents_listview;
-    Button logoutBtn, messageBtn;
+    Button logoutBtn, messageBtn, declineBtn;
     ArrayList<String> arrayList;
     ArrayAdapter<String> adapter;
     FirebaseUser firebaseUser;
@@ -71,7 +75,6 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     private float GEOFENCE_RADIUS = 2000;
     private String GEOFENCE_ID = ""+new Random().nextInt()+"";
     LocationManager locationManager;
-    private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private String token = null;
 
@@ -82,6 +85,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
         logoutBtn = findViewById(R.id.logoutBtn);
         messageBtn = findViewById(R.id.messageBtn);
+        declineBtn = findViewById(R.id.declineBtn);
         emergency_info_text_view = findViewById(R.id.emergency_info_text_view);
         location_info_text_view = findViewById(R.id.location_info_text_view);
 
@@ -94,13 +98,14 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
         Intent intent = getIntent();
         curEmergency = intent.getStringExtra("Emergency");
+
         String[] splitCurEmergency = curEmergency.split("\\,", 0);
         curEmergency = splitCurEmergency[0];
         double lat = Double.parseDouble(splitCurEmergency[1]);
         double lon = Double.parseDouble(splitCurEmergency[2]);
-
+        curLocation = lat +"," + lon;
         emergency_info_text_view.setText(curEmergency);
-        location_info_text_view.setText(lat + "," + lon);
+        location_info_text_view.setText(curLocation);
 
         //Get current Location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -129,6 +134,16 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                 finish();
             }
         });
+
+        declineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                declineIncident();
+                startActivity(new Intent(EmergenciesActivity.this, EmployeeMainActivity.class));
+                finish();
+
+            }
+        });
     }
 
     private void addGeofence(double lat, double lon, float radius) {
@@ -152,6 +167,35 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                         Log.d(TAG, "onFailure " + errorMessage);
                     }
                 });
+    }
+
+    private void declineIncident(){
+        firestore = FirebaseFirestore.getInstance();
+        // Collection Reference to all incidents
+        CollectionReference incidentsRef = firestore.collection("incidents");
+
+        // Query to get the incidents in order
+        Query query = incidentsRef
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
+                .orderBy("Emergency", Query.Direction.ASCENDING);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot document : queryDocumentSnapshots){
+                    if(document.getString("Emergency").equals(curEmergency))
+                        if(document.getString("Location") == curLocation)
+                            System.out.println(document.getString("Comments"));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+
     }
 
     @Override

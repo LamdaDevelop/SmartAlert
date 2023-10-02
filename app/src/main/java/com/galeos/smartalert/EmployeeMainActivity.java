@@ -1,10 +1,12 @@
 package com.galeos.smartalert;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +48,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     Incidents incident;
+
     public static final double r = 6372.8;// In kilometers
 
 
@@ -98,6 +101,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 .orderBy("Emergency", Query.Direction.ASCENDING);
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         // Iterate through the documents and group them by category and location
@@ -167,6 +171,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static Map<String, Map<String, List<Incidents>>> groupIncidents(List<Incidents> incidents) {
         // Create a map to group incidents by emergency type and location
         Map<String, Map<String, List<Incidents>>> groupedIncidents = new HashMap<>();
@@ -175,7 +180,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
         for (Incidents incident : incidents) {
             String emergencyType = incident.emergency;
             String location = incident.location;
-
+            String comments = incident.comments;
             // Get or create a map for the current emergency type
             Map<String, List<Incidents>> locationMap = groupedIncidents.getOrDefault(emergencyType, new HashMap<>());
 
