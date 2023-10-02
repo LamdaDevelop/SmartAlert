@@ -37,17 +37,22 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setReferences();
 
+
+    }
+
+    private void setReferences(){
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         loginBtn = findViewById(R.id.login_btn);
         progressBar = findViewById(R.id.progress_bar);
         createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
-
         loginBtn.setOnClickListener((v) -> loginUser());
         Intent intent = getIntent();
         isUser = intent.getStringExtra("isUser");
         createAccountBtnTextView.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class).putExtra("isUser",isUser)));
+
     }
 
     void loginUser() {

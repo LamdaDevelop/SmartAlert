@@ -26,7 +26,6 @@ public class CreateAccountActivity extends AppCompatActivity {
     Button createAccountBtn;
     ProgressBar progressBar;
     TextView loginBtnTextView;
-
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;

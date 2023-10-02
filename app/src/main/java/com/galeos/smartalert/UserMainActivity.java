@@ -27,9 +27,17 @@ public class UserMainActivity extends AppCompatActivity {
         // Start the LocationService
         //startLocationService();
         //createNotificationChannel();
+
+        setReferences();
+
+
+    }
+
+    private void setReferences(){
         sosBtn = findViewById(R.id.sosBtn);
         logoutBtn = findViewById(R.id.logoutBtn);
         statistics_btn = findViewById(R.id.statistics_btn);
+
         sosBtn.setOnClickListener((v)->startActivity(new Intent(UserMainActivity.this,NotifyActivity.class)));
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +55,6 @@ public class UserMainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
 
