@@ -31,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
     TextView createAccountBtnTextView;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
-    FirebaseUser firebaseuser;
 
     String isUser;
     @Override

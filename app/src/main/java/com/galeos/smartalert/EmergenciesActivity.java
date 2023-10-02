@@ -1,8 +1,6 @@
 package com.galeos.smartalert;
-import static java.lang.String.format;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,33 +15,24 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
+
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,10 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class EmergenciesActivity extends AppCompatActivity implements LocationListener {
 
@@ -66,8 +52,8 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
 
     FirebaseFirestore firestore;
-    private static final double r = 6372.8; // In kilometers
-    String curEmergency, curTimestamp, curLocation;
+    //private static final double r = 6372.8; // In kilometers
+    String curEmergency, curLocation;
     TextView emergency_info_text_view, location_info_text_view, comments_info_text_view;
     private String url = "https://fcm.googleapis.com/fcm/send";
     //Geo
@@ -78,7 +64,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     private String GEOFENCE_ID = ""+new Random().nextInt()+"";
     LocationManager locationManager;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
-    private String token = null;
+    //private String token = null;
     double lat,lon;
 
     @Override
@@ -91,6 +77,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
         getNearbyIncidents();
     }
 
+
     private void setReferences(){
         logoutBtn = findViewById(R.id.logoutBtn);
         messageBtn = findViewById(R.id.messageBtn);
@@ -98,7 +85,6 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
         emergency_info_text_view = findViewById(R.id.emergency_info_text_view);
         location_info_text_view = findViewById(R.id.location_info_text_view);
         comments_info_text_view = findViewById(R.id.comments_info_text_view);
-
         incidentsIdArrayList = new ArrayList<>();
         arrayList = new ArrayList<>();
         //location instantiate
@@ -106,10 +92,8 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
         //Geo
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
-
         Intent intent = getIntent();
         curEmergency = intent.getStringExtra("Emergency");
-
         String[] splitCurEmergency = curEmergency.split("\\,", 0);
         curEmergency = splitCurEmergency[0];
         lat = Double.parseDouble(splitCurEmergency[1]);
@@ -130,7 +114,6 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                 finish();
             }
         });
-
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,8 +123,6 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
             }
         });
-
-
     }
 
     void getCurrentLocation(){
@@ -247,6 +228,8 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                 });
     }
 
+
+
     // Method to add the incidents in the declinedIncident db
     private void declineIncident() {
         firestore = FirebaseFirestore.getInstance();
@@ -294,34 +277,25 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     }
 
 
-
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         // Radius of the Earth in kilometers
         double radius = 6371;
-
         // Convert latitude and longitude from degrees to radians
         lat1 = Math.toRadians(lat1);
         lon1 = Math.toRadians(lon1);
         lat2 = Math.toRadians(lat2);
         lon2 = Math.toRadians(lon2);
-
         // Haversine formula
         double dLat = lat2 - lat1;
         double dLon = lon2 - lon1;
-
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1) * Math.cos(lat2) *
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
         // Calculate the distance
         double distance = radius * c;
-
         return distance;
     }
-
-
     // Function to split a coordinates string into latitude and longitude as doubles
     public static double[] splitCoordinates(String coordinates) {
         String[] parts = coordinates.split(",");

@@ -1,7 +1,7 @@
 package com.galeos.smartalert;
 
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
@@ -26,19 +26,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashMap;
-import java.util.Locale;
+
 import java.util.Map;
 
 
@@ -53,11 +50,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
-    FirebaseStorage storage;
+
     ImageView photo_image_view;
     Incidents incident;
-    StorageReference storageRef;
-    StorageReference imageRef;
+
     Uri selectedImage;
 
     boolean image_picked = false;
