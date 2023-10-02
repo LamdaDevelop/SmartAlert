@@ -41,6 +41,8 @@
     <string name="Incident_sent_successfully">Incident sent successfully</string>
     <string name="statistics">Statistics</string>
     <string name="logout">Logout</string>
+    <string name="Turnon_location_message">Please activate the location</string>
+
 
 
     <!--dropdown options-->

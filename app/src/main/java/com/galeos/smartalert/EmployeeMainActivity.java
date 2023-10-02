@@ -1,10 +1,12 @@
 package com.galeos.smartalert;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +48,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     Incidents incident;
+
     public static final double r = 6372.8;// In kilometers
 
 
@@ -53,13 +56,32 @@ public class EmployeeMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_main);
+
+        setReferences();
+        getLatestIncidentsFromFirebase();
+
+
+        // Add OnItemClickListener to ListView
+        incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String emergency = arrayList.get(position);
+                //String comments = emergency.comments;
+                String[] splitEmergency = emergency.split("\\:",0);
+                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",splitEmergency[0]));
+                finish();
+            }
+        });
+
+    }
+
+    private void setReferences(){
         incidents_listview = findViewById(R.id.incidents_listview);
         logoutBtn = findViewById(R.id.logoutBtn);
-
         arrayList = new ArrayList<>();
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
         incidents_listview.setAdapter(adapter);
-        getLatestIncidentsFromFirebase();
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,36 +89,31 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // Add OnItemClickListener to ListView
-        incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String emergency = arrayList.get(position).substring(arrayList.get(position).indexOf(":") + 2);
-                //Toast.makeText(EmployeeMainActivity.this, emergency, Toast.LENGTH_SHORT).show();
-                //getEmergencyDataFromFirebase(emergency);
-                startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",emergency));
-            }
-        });
-
     }
 
     void getLatestIncidentsFromFirebase() {
+        //initialize a reference to the Firestore database
         firestore = FirebaseFirestore.getInstance();
 
-        // Create a map to store the counts of incidents for each category
+        //initialize an ArrayList to store incident data
         ArrayList<Incidents> incidentArrayList = new ArrayList<>();
 
 
-        // Collection Reference to all incidents
+        // create a reference to the "incidents" collection in Firestore
         CollectionReference incidentsRef = firestore.collection("incidents");
 
         // Query to get the incidents in order
+        //
+        //    It orders the incidents by "Timestamp" in descending order, meaning the most recent incidents come first.
+        //    It then orders the incidents by "Emergency" in ascending order.
         Query query = incidentsRef
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .orderBy("Emergency", Query.Direction.ASCENDING);
+
+        // Εxecute the query and add a success listener to handle the results when the query is successful.
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         // Iterate through the documents and group them by category and location
@@ -105,23 +122,28 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             String emergency = document.getString("Emergency");
                             String location = document.getString("Locations");
                             String timestampStr = document.getString("Timestamp");
-                            // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                            Date timestamp = null;
-                            try {
-                                timestamp = format.parse(timestampStr);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            String comments = document.getString("Comments");
+                            Boolean declined = document.getBoolean("Declined");
+                            System.out.println(declined);
+                            if(!declined) {
+                                // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                Date timestamp = null;
+                                try {
+                                    timestamp = format.parse(timestampStr);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
 
-                            // Calculate time difference between incident time and current time
-                            Date currentTime = new Date();
-                            long timeDiff = currentTime.getTime() - timestamp.getTime();
-                            long hourInMillis = 60 * 60 * 1000;
+                                // Calculate time difference between incident time and current time
+                                Date currentTime = new Date();
+                                long timeDiff = currentTime.getTime() - timestamp.getTime();
+                                long hourInMillis = 60 * 60 * 1000;
 
-                            // Only add Emergency category if it occurred within the last hour
-                            if (timeDiff <= hourInMillis ) {
-                                incidentArrayList.add(new Incidents(emergency,location,timestampStr));
+                                // Only add Emergency category if it occurred within the last hour
+                                if (timeDiff <= hourInMillis) {
+                                    incidentArrayList.add(new Incidents(emergency, location, timestampStr, comments, declined));
+                                }
                             }
                         }
                         // Create a map to group incidents by emergency type
@@ -131,10 +153,11 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             String emergencyType = emergencyEntry.getKey();
                             Map<String, List<Incidents>> locationMap = emergencyEntry.getValue();
 
+                            //It counts the number of incidents in each location and creates a string
+                            // containing the emergency type, location, and the count of incidents.
                             for (Map.Entry<String, List<Incidents>> locationEntry : locationMap.entrySet()) {
                                 String location = locationEntry.getKey();
                                 List<Incidents> incidentsAtLocation = locationEntry.getValue();
-
                                 System.out.println("Location: " + location);
                                 int count = 0;
                                 for (Incidents incident : incidentsAtLocation) {
@@ -144,7 +167,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
                                 categories.add(subcategory);
                             }
                         }
-
+                        // It sorts the categories list based on the incident count
+                        // in descending order using a custom comparator.
                         Collections.sort(categories, new Comparator<String>() {
                             @Override
                             public int compare(String o1, String o2) {
@@ -153,7 +177,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
                                 return Integer.compare(count2, count1);
                             }
                         });
-
+                        // adds the sorted categories to an existing arrayList and
+                        // notifies the adapter to update the UI.
                         arrayList.addAll(categories);
                         adapter.notifyDataSetChanged();
                     }
@@ -161,20 +186,23 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle any errors
+                        System.out.println(e.getMessage());
                     }
                 });
     }
 
-    public static Map<String, Map<String, List<Incidents>>> groupIncidents(List<Incidents> incidents) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static Map<String, Map<String, List<Incidents>>> groupIncidents(List<Incidents> incidentsList) {
         // Create a map to group incidents by emergency type and location
         Map<String, Map<String, List<Incidents>>> groupedIncidents = new HashMap<>();
+        // Create a map to hold ArrayLists of incidents for each location
+        Map<String, List<Incidents>> incidentsByLocation = new HashMap<>();
 
         // Iterate through the incidents
-        for (Incidents incident : incidents) {
+        for (Incidents incident : incidentsList) {
             String emergencyType = incident.emergency;
             String location = incident.location;
-
+            String comments = incident.comments;
             // Get or create a map for the current emergency type
             Map<String, List<Incidents>> locationMap = groupedIncidents.getOrDefault(emergencyType, new HashMap<>());
 
