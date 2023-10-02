@@ -43,6 +43,11 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        setReferences();
+    }
+
+    //Set the References of each object
+    private void setReferences(){
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         confirmPasswordEditText = findViewById(R.id.confirm_password_edit_text);
@@ -55,43 +60,50 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     void createAccount(){
+        //Get the email,password and confirmPassword text
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
+        //Call the validateData method to check if the data are correct
         boolean isValidated = validateData(email,password,confirmPassword);
         if(!isValidated){
             return;
         }
 
+        //If the data are correct call the createAccountInFirebase method
         createAccountInFirebase(email,password);
     }
 
     void createAccountInFirebase(String email, String password){
+        //ProgressBar method
         changeInProgress(true);
 
+        //Get the instances for the authentication and the firestore
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
+        //Create user
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(CreateAccountActivity.this,
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         changeInProgress(false);
+                        //If the user is created
                         if(task.isSuccessful()){
+                            //Get the current User
                             firebaseUser = firebaseAuth.getCurrentUser();
+                            //Notify with a Toast that the account was created with success
                             Toast.makeText(CreateAccountActivity.this,getString(R.string.succ_creat_acc), Toast.LENGTH_SHORT).show();
+
+                            //Set the role of the user in firestore
                             Intent intent = getIntent();
                             String isUser = intent.getStringExtra("isUser");
-
-                            Log.d("User",firebaseUser.getUid());
                             Users users = new Users();
                             users.setIsUser(isUser);
                             firestore.collection("users").document(firebaseUser.getUid()).set(users);
-                            //Map<String,Object> userInfo = new HashMap<>();
 
-                            //userInfo.put("isUser",users);
-                            //df.set(userInfo);
-
+                            //Send an Email Verification and signOut
                             firebaseAuth.getCurrentUser().sendEmailVerification();
                             firebaseAuth.signOut();
                             finish();
@@ -103,6 +115,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
+    //Just a progressBar
     void changeInProgress(boolean inProgress){
         if(inProgress){
             progressBar.setVisibility(View.VISIBLE);
@@ -112,6 +125,8 @@ public class CreateAccountActivity extends AppCompatActivity {
             createAccountBtn.setVisibility(View.VISIBLE);
         }
     }
+
+    //Validates the data with some simple if statements
     boolean validateData(String email, String password, String confirmPassowrd){
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             emailEditText.setError(getString(R.string.email_invalid));
