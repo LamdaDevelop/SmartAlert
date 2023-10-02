@@ -149,12 +149,13 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
             finish();
             return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        }else if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             finish();
             Toast.makeText(EmergenciesActivity.this, getString(R.string.Turnon_location_message), Toast.LENGTH_SHORT).show();
+        }else{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
+
     }
 
     private void getNearbyIncedents(){
@@ -271,7 +272,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                 for (DocumentSnapshot document : queryDocumentSnapshots){
                     if(document.getString("Emergency").equals(curEmergency)) {
                         if(document.getString("Locations") == curLocation) {
-                            Incidents incident = new Incidents(document.getString("Emergency"), document.getString("Locations"), document.getString("Timestamp"), document.getString("Comments"));
+                            Incidents incident = new Incidents(document.getString("Emergency"), document.getString("Locations"), document.getString("Timestamp"), document.getString("Comments"), document.getBoolean("Declined"));
                         }
                     }
                 }

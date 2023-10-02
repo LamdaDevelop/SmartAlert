@@ -182,7 +182,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         if (!isValidated) {
             return;
         }
-        incident = new Incidents(emergency, location, timestamp, comments);
+        incident = new Incidents(emergency, location, timestamp, comments,false);
 
         createIncidentInFirebase(incident);
     }
@@ -213,6 +213,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         incidentInfo.put("Locations", incident.getLocation());
         incidentInfo.put("Timestamp", incident.getTimestamp());
         incidentInfo.put("Comments", incident.getComments());
+        incidentInfo.put("Declined", false);
 
 
         String document = incident.getEmergency() + " - " + firebaseUser.getUid() + timestamp_info_text_view.getText().toString();

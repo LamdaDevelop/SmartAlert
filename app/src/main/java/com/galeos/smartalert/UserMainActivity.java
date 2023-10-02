@@ -1,10 +1,14 @@
 package com.galeos.smartalert;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +16,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -50,6 +55,8 @@ public class UserMainActivity extends AppCompatActivity {
         });
 
     }
+
+
      /*
     private void startLocationService() {
         Intent serviceIntent = new Intent(this, LocationService.class);

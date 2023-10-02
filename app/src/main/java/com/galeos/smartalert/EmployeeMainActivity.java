@@ -123,23 +123,27 @@ public class EmployeeMainActivity extends AppCompatActivity {
                             String location = document.getString("Locations");
                             String timestampStr = document.getString("Timestamp");
                             String comments = document.getString("Comments");
-                            // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                            Date timestamp = null;
-                            try {
-                                timestamp = format.parse(timestampStr);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            Boolean declined = document.getBoolean("Declined");
+                            System.out.println(declined);
+                            if(!declined) {
+                                // Convert timestamp string to Date object so we can calculate the difference between incident time and current time
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                Date timestamp = null;
+                                try {
+                                    timestamp = format.parse(timestampStr);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
 
-                            // Calculate time difference between incident time and current time
-                            Date currentTime = new Date();
-                            long timeDiff = currentTime.getTime() - timestamp.getTime();
-                            long hourInMillis = 60 * 60 * 1000;
+                                // Calculate time difference between incident time and current time
+                                Date currentTime = new Date();
+                                long timeDiff = currentTime.getTime() - timestamp.getTime();
+                                long hourInMillis = 60 * 60 * 1000;
 
-                            // Only add Emergency category if it occurred within the last hour
-                            if (timeDiff <= hourInMillis ) {
-                                incidentArrayList.add(new Incidents(emergency,location,timestampStr,comments));
+                                // Only add Emergency category if it occurred within the last hour
+                                if (timeDiff <= hourInMillis) {
+                                    incidentArrayList.add(new Incidents(emergency, location, timestampStr, comments, declined));
+                                }
                             }
                         }
                         // Create a map to group incidents by emergency type
