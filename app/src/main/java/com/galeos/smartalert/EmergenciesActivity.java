@@ -62,7 +62,8 @@ import org.json.JSONObject;
 public class EmergenciesActivity extends AppCompatActivity implements LocationListener {
 
     Button logoutBtn, messageBtn, declineBtn;
-    ArrayList<String> arrayList;
+    ArrayList<String> arrayList, incidentsIdArrayList;
+
 
     FirebaseFirestore firestore;
     private static final double r = 6372.8; // In kilometers
@@ -87,7 +88,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
         setReferences();
         getCurrentLocation();
-        getNearbyIncedents();
+        getNearbyIncidents();
     }
 
     private void setReferences(){
@@ -98,6 +99,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
         location_info_text_view = findViewById(R.id.location_info_text_view);
         comments_info_text_view = findViewById(R.id.comments_info_text_view);
 
+        incidentsIdArrayList = new ArrayList<>();
         arrayList = new ArrayList<>();
         //location instantiate
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -158,14 +160,9 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
 
     }
 
-    private void getNearbyIncedents(){
+    private void getNearbyIncidents(){
         //initialize a reference to the Firestore database
         firestore = FirebaseFirestore.getInstance();
-
-        //initialize an ArrayList to store incident data
-        ArrayList<Incidents> incidentArrayList = new ArrayList<>();
-
-
         // create a reference to the "incidents" collection in Firestore
         CollectionReference incidentsRef = firestore.collection("incidents");
 
@@ -195,7 +192,6 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-
                                 // Calculate time difference between incident time and current time
                                 Date currentTime = new Date();
                                 long timeDiff = currentTime.getTime() - timestamp.getTime();
@@ -203,24 +199,20 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
                                 // Only add Emergency category if it occurred within the last hour
                                 if (timeDiff <= hourInMillis ) {
                                     double[] coordinates1 = splitCoordinates(curLocation);
-                                    //System.out.println(document.getString("Locations"));
                                     double[] coordinates2 = splitCoordinates(document.getString("Locations"));
                                     if (coordinates1 != null && coordinates2 != null) {
                                         double distance = calculateDistance(coordinates1[0], coordinates1[1], coordinates2[0], coordinates2[1]);
                                         if (distance <= 15.0) {
                                             String comment = document.getString("Comments");
+                                            System.out.println(document.getId());
                                             System.out.println(comment);
                                             String currText = comments_info_text_view.getText().toString();
                                             comments_info_text_view.setText(comment+"\n "+ currText);
+                                            incidentsIdArrayList.add(document.getId());
                                         }
                                     }
                                 }
                             }
-/*
-                            String location = document.getString("Locations");
-                            String timestampStr = document.getString("Timestamp");
-                            String comments = document.getString("Comments");
-*/
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -256,35 +248,24 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
     }
 
     // Method to add the incidents in the declinedIncident db
-    private void declineIncident(){
+    private void declineIncident() {
         firestore = FirebaseFirestore.getInstance();
-        // Collection Reference to all incidents
         CollectionReference incidentsRef = firestore.collection("incidents");
-
-        // Query to get the incidents in order
-        Query query = incidentsRef
-                .orderBy("Timestamp", Query.Direction.DESCENDING)
-                .orderBy("Emergency", Query.Direction.ASCENDING);
-
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot document : queryDocumentSnapshots){
-                    if(document.getString("Emergency").equals(curEmergency)) {
-                        if(document.getString("Locations") == curLocation) {
-                            Incidents incident = new Incidents(document.getString("Emergency"), document.getString("Locations"), document.getString("Timestamp"), document.getString("Comments"), document.getBoolean("Declined"));
-                        }
-                    }
+        for (String id : incidentsIdArrayList) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("Declined", true);
+            incidentsRef.document(id).update(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(EmergenciesActivity.this, "Incidents declined!", Toast.LENGTH_SHORT).show();
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+        }
     }
 
     @Override
