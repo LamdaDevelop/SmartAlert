@@ -42,7 +42,30 @@
     <string name="statistics">Statistics</string>
     <string name="logout">Logout</string>
     <string name="Turnon_location_message">Please activate the location</string>
-
+    <string name="StatisticEarthquake">Earthquake: 0</string>
+    <string name="StatisticFlood">Flood: 0</string>
+    <string name="StatisticFire">Fire: 0</string>
+    <string name="StatisticHurricane">Hurricane: 0</string>
+    <string name="StatisticTsunami">Tsunami: 0</string>
+    <string name="StatisticTerrorist_Attack">Terrorist Attack: 0</string>
+    <string name="StatisticChemical_Spills">Chemical Spills: 0</string>
+    <string name="StatisticOther">Other: 0</string>
+    <string name="StatisticTotal_Incidents">Total Incidents: 0</string>
+    <string name="StatisticGo_Back">GO BACK</string>
+    <string name="StatisticsActEarthquake">"Earthquake: "</string>
+    <string name="StatisticsActFlood">Flood:</string>
+    <string name="StatisticsActFire">"Fire: "</string>
+    <string name="StatisticsActHurricane">"Hurricane: "</string>
+    <string name="StatisticsActTsunami">"Tsunami: "</string>
+    <string name="StatisticsActTerrorist_Attack">"Terrorist Attack: "</string>
+    <string name="StatisticsActChemical_Spills">"Chemical Spills: "</string>
+    <string name="StatisticsActOther">"Other: "</string>
+    <string name="StatisticsActTotal_Incidents">"Total Incidents: "</string>
+    <string name="TitleEmergency">EMERGENCY</string>
+    <string name="Activityemergency_emerg">Emergency:</string>
+    <string name="message">Message</string>
+    <string name="decline">DECLINE</string>
+    <string name="incident_declined">Incidents declined!</string>
 
 
     <!--dropdown options-->

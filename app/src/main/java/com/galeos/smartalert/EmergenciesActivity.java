@@ -240,7 +240,7 @@ public class EmergenciesActivity extends AppCompatActivity implements LocationLi
             incidentsRef.document(id).update(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    Toast.makeText(EmergenciesActivity.this, "Incidents declined!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EmergenciesActivity.this, R.string.incident_declined, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

@@ -24,8 +24,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logoutBtn"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="172dp"
+        android:layout_height="59dp"
         android:layout_below="@id/incidents_listview"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"

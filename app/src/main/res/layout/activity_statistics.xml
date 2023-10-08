@@ -6,100 +6,100 @@
     <!-- Counter for Earthquake -->
     <TextView
         android:id="@+id/earthquake"
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:text="Earthquake: 0"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/StatisticEarthquake" />
 
     <!-- Counter for Flood -->
     <TextView
         android:id="@+id/flood"
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:text="Flood: 0"
         android:layout_below="@id/earthquake"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/StatisticFlood" />
 
     <!-- Counter for Fire -->
     <TextView
         android:id="@+id/fire"
-        android:layout_width="wrap_content"
+        android:layout_width="224dp"
         android:layout_height="wrap_content"
-        android:text="Fire: 0"
         android:layout_below="@id/flood"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="@string/StatisticFire" />
 
     <!-- Counter for Hurricane -->
     <TextView
         android:id="@+id/hurricane"
-        android:layout_width="wrap_content"
+        android:layout_width="224dp"
         android:layout_height="wrap_content"
-        android:text="Hurricane: 0"
         android:layout_below="@id/fire"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/StatisticHurricane" />
 
     <!-- Counter for Tsunami -->
     <TextView
         android:id="@+id/tsunami"
-        android:layout_width="wrap_content"
+        android:layout_width="221dp"
         android:layout_height="wrap_content"
-        android:text="Tsunami: 0"
         android:layout_below="@id/hurricane"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="@string/StatisticTsunami" />
 
     <!-- Counter for Terrorist Attack -->
     <TextView
         android:id="@+id/terroristAttack"
-        android:layout_width="wrap_content"
+        android:layout_width="221dp"
         android:layout_height="wrap_content"
-        android:text="Terrorist Attack: 0"
         android:layout_below="@id/tsunami"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/StatisticTerrorist_Attack" />
 
     <!-- Counter for Chemical Spills -->
     <TextView
         android:id="@+id/chemicalSpills"
-        android:layout_width="wrap_content"
+        android:layout_width="219dp"
         android:layout_height="wrap_content"
-        android:text="Chemical Spills: 0"
         android:layout_below="@id/terroristAttack"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="@string/StatisticChemical_Spills" />
 
     <!-- Counter for Other -->
     <TextView
         android:id="@+id/other"
-        android:layout_width="wrap_content"
+        android:layout_width="219dp"
         android:layout_height="wrap_content"
-        android:text="Other: 0"
         android:layout_below="@id/chemicalSpills"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/StatisticOther" />
 
     <!-- Counter for Total Incidents -->
     <TextView
         android:id="@+id/totalIncidents"
-        android:layout_width="wrap_content"
+        android:layout_width="218dp"
         android:layout_height="wrap_content"
-        android:text="Total Incidents: 0"
         android:layout_below="@id/other"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="@string/StatisticTotal_Incidents" />
 
     <!-- GO BACK Button -->
     <Button
         android:id="@+id/goBackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="GO BACK"
+        android:layout_width="169dp"
+        android:layout_height="66dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="76dp"
+        android:text="@string/StatisticGo_Back" />
 
 </RelativeLayout>

@@ -23,6 +23,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
+        //A delay for the loading animation
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -37,11 +38,11 @@ public class LoadingActivity extends AppCompatActivity {
         },2000);
 
     }
-
+    // This method is designed to check the access level of a user in
+    // Firebase Firestore and perform actions based on their role
     void checkUserAccessLevel(FirebaseUser firebaseuser){
-
+        // pointing to "users" collection within Firestore
         DocumentReference df = firestore.collection("users").document(firebaseuser.getUid());
-
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

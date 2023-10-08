@@ -38,8 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setReferences();
-
-
     }
 
     private void setReferences(){
@@ -64,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         loginAccountInFirebase(email,password);
     }
+
     void loginAccountInFirebase(String email, String password){
         firebaseAuth = FirebaseAuth.getInstance();
         changeInProgress(true);

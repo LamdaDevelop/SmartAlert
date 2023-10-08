@@ -93,15 +93,16 @@ public class StatisticsActivity extends AppCompatActivity {
                             }
                         }
                         totalCounter = earthquakeCounter+fireCounter+floodCounter+hurricaneCounter+tsunamiCounter+terrAttackCounter+chemSpillsCounter+otherCounter;
-                        earthquakeTextView.setText("Earthquake: " + earthquakeCounter);
-                        floodTextView.setText("Flood: " + floodCounter);
-                        fireTextView.setText("Fire: " + fireCounter);
-                        hurricaneTextView.setText("Hurricane: " + hurricaneCounter);
-                        tsunamiTextView.setText("Tsunami: " + tsunamiCounter);
-                        terroristAttackTextView.setText("Terrorist Attack: " + terrAttackCounter);
-                        chemicalSpillsTextView.setText("Chemical Spills: " + chemSpillsCounter);
-                        otherTextView.setText("Other: " + otherCounter);
-                        totalIncidentsTextView.setText("Total Incidents: " + totalCounter);
+                        earthquakeTextView.setText(getString(R.string.StatisticsActEarthquake)+" "+ earthquakeCounter);
+                        floodTextView.setText(getString(R.string.StatisticsActFlood)+" "+ floodCounter);
+                        fireTextView.setText(getString(R.string.StatisticsActFire)+" "+ fireCounter);
+                        hurricaneTextView.setText(getString(R.string.StatisticsActHurricane)+" "+ hurricaneCounter);
+                        tsunamiTextView.setText(getString(R.string.StatisticsActTsunami)+" "+ tsunamiCounter);
+                        terroristAttackTextView.setText(getString(R.string.StatisticsActTerrorist_Attack)+" "+ terrAttackCounter);
+                        chemicalSpillsTextView.setText(getString(R.string.StatisticsActChemical_Spills)+" "+ chemSpillsCounter);
+                        otherTextView.setText(getString(R.string.StatisticsActOther)+" "+ otherCounter);
+                        totalIncidentsTextView.setText(getString(R.string.StatisticsActTotal_Incidents)+" "+ totalCounter);
+
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
