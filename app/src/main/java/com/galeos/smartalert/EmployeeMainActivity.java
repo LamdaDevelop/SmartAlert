@@ -5,21 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,7 +30,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,10 +38,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
     Button logoutBtn;
     ArrayList<String> arrayList;
     ArrayAdapter<String> adapter;
-    FirebaseUser firebaseUser;
-    FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
-    Incidents incident;
 
     public static final double r = 6372.8;// In kilometers
 
@@ -65,9 +56,7 @@ public class EmployeeMainActivity extends AppCompatActivity {
         incidents_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 String emergency = arrayList.get(position);
-                //String comments = emergency.comments;
                 String[] splitEmergency = emergency.split("\\:",0);
                 startActivity(new Intent(EmployeeMainActivity.this,EmergenciesActivity.class).putExtra("Emergency",splitEmergency[0]));
                 finish();
@@ -212,10 +201,8 @@ public class EmployeeMainActivity extends AppCompatActivity {
                 String existingLocation = entry.getKey();
                 double[] coordinates1 = splitCoordinates(location);
                 double[] coordinates2 = splitCoordinates(existingLocation);
-
                 if (coordinates1 != null && coordinates2 != null) {
                     double distance = calculateDistance(coordinates1[0], coordinates1[1], coordinates2[0], coordinates2[1]);
-
                     if (distance <= 15.0) {
                         // Add to the existing location group
                         entry.getValue().add(incident);
@@ -224,18 +211,15 @@ public class EmployeeMainActivity extends AppCompatActivity {
                     }
                 }
             }
-
             if (!addedToExistingLocation) {
                 // Create a new location group
                 List<Incidents> incidentsAtLocation = new ArrayList<>();
                 incidentsAtLocation.add(incident);
                 locationMap.put(location, incidentsAtLocation);
             }
-
             // Put the location map back into the emergency type map
             groupedIncidents.put(emergencyType, locationMap);
         }
-
         return groupedIncidents;
     }
 
@@ -243,26 +227,20 @@ public class EmployeeMainActivity extends AppCompatActivity {
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         // Radius of the Earth in kilometers
         double radius = 6371;
-
         // Convert latitude and longitude from degrees to radians
         lat1 = Math.toRadians(lat1);
         lon1 = Math.toRadians(lon1);
         lat2 = Math.toRadians(lat2);
         lon2 = Math.toRadians(lon2);
-
         // Haversine formula
         double dLat = lat2 - lat1;
         double dLon = lon2 - lon1;
-
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1) * Math.cos(lat2) *
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
         // Calculate the distance
         double distance = radius * c;
-
         return distance;
     }
 
@@ -283,8 +261,5 @@ public class EmployeeMainActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
-
 
 }

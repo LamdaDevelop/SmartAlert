@@ -1,22 +1,16 @@
 package com.galeos.smartalert;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.ImageButton;
-import android.widget.Toast;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,9 +27,17 @@ public class UserMainActivity extends AppCompatActivity {
         // Start the LocationService
         //startLocationService();
         //createNotificationChannel();
+
+        setReferences();
+
+
+    }
+
+    private void setReferences(){
         sosBtn = findViewById(R.id.sosBtn);
         logoutBtn = findViewById(R.id.logoutBtn);
         statistics_btn = findViewById(R.id.statistics_btn);
+
         sosBtn.setOnClickListener((v)->startActivity(new Intent(UserMainActivity.this,NotifyActivity.class)));
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +55,6 @@ public class UserMainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
 

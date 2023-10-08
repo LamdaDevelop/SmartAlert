@@ -1,7 +1,7 @@
 package com.galeos.smartalert;
 
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
@@ -26,19 +26,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashMap;
-import java.util.Locale;
+
 import java.util.Map;
 
 
@@ -53,11 +50,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
-    FirebaseStorage storage;
+
     ImageView photo_image_view;
     Incidents incident;
-    StorageReference storageRef;
-    StorageReference imageRef;
+
     Uri selectedImage;
 
     boolean image_picked = false;
@@ -66,12 +62,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify);
-        photo_image_view = findViewById(R.id.photo_image_view);
-        dropdown_spinner = findViewById(R.id.dropdown_spinner);
-        timestamp_info_text_view = findViewById(R.id.timestamp_info_text_view);
-        location_info_text_view = findViewById(R.id.location_info_text_view);
-        comments_edit_text = findViewById(R.id.comments_edit_text);
-        submit_button = findViewById(R.id.submit_button);
+        setReferences();
 
 
         //Spinner for categories drop down
@@ -79,12 +70,9 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         dropdown_spinner.setAdapter(adapter);
 
-        //Current timestamp
-        timestamp = new Timestamp(System.currentTimeMillis());
-        timestamp_info_text_view.setText(timestamp.toString());
 
-        //location instantiate
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
 
         //Get current Location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -92,13 +80,31 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
             finish();
             return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        }else if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             finish();
             Toast.makeText(NotifyActivity.this, getString(R.string.Turnon_location_message), Toast.LENGTH_SHORT).show();
+        }else{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
         }
+
+
+
+
+    }
+
+    private void setReferences(){
+        photo_image_view = findViewById(R.id.photo_image_view);
+        dropdown_spinner = findViewById(R.id.dropdown_spinner);
+        timestamp_info_text_view = findViewById(R.id.timestamp_info_text_view);
+        location_info_text_view = findViewById(R.id.location_info_text_view);
+        comments_edit_text = findViewById(R.id.comments_edit_text);
+        submit_button = findViewById(R.id.submit_button);
+        //Current timestamp
+        timestamp = new Timestamp(System.currentTimeMillis());
+        timestamp_info_text_view.setText(timestamp.toString());
+        //location instantiate
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,10 +119,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 pickImage();
             }
         });
-
     }
-
-
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
